@@ -1,38 +1,243 @@
-.App {
-  text-align: center;
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+*{margin: 0px;padding: 0px;}
+
+body{ font-family: "Open Sans", sans-serif !important;background: #ebe9e9;}
+
+header{width: 100%; height: 70px;background: #fff; position: fixed;top: 0px;left: 0px; z-index: 1000;}
+header .logo img{width: 70px;}
+header .logo span {color: #292929;font-weight: 800;font-size: 24px;}
+header .logo{text-decoration: none;}
+
+header button.rounded-circle{min-width: 40px !important;width: 40px !important;height: 40px !important; background: #f0f5ff !important; color: #f45050; }
+header button.rounded-circle svg{color: #292929; font-size: 18px !important;}
+header button.rounded-circle:hover svg{color: #f45050 !important; transition: all
+   0.2s ease-in-out;}
+
+
+.searchBox{width: 400px; height: 40px; background: #f0f5ff; border-radius: 6px; padding: 3px 15px;}
+.searchBox input{background: transparent; border: 0px; outline: none;padding-left: 5px; font-size: 14px; color: #292929;}
+.searchBox input::-webkit-input-placeholder{color: rgba(0,0,0,0,6);}
+
+
+.searchBox svg{font-size: 18px;color: #292929;  }
+
+
+
+
+.myAcc {text-align: left !important; color: #f45050 !important; text-transform: capitalize !important;
+}
+.myAcc .userImg{display: flex;align-items: center;justify-content: center;overflow: hidden; width: 40px;height: 40px;
+border: 1px solid #f45050; padding: 2px; border-radius: 100%;}
+.myAcc .userImg .rounded-circle{display: flex;align-items: center;justify-content: center;overflow: hidden; width: 100%px;height: 100%px;
+cursor: pointer;position: relative; }
+.myAcc .userImg .rounded-circle img{object-fit: cover; width: 100%;height: 100%;}
+
+
+.myAcc .userInfor{padding-left: 10px;}
+.myAcc .userInfor h4{font-size: 15px; font-weight: 600; margin-bottom: 0px;color: #292929;}
+.myAcc .userInfor p {margin-top: 0px; font-size: 12px; color: #000; opacity: 0.7;}
+
+#account-menu li{font-size: 14px !important;padding: 12px 15px !important;}
+#account-menu li svg{font-size: 20px !important;}
+
+#notifications .MuiPaper-elevation{right: 16% !important;width: 250px !important;left:auto !important;}
+
+.dropdown_list h4{font-size: 20px; font-weight: 600;}
+
+.main .sidebarWrapper{
+   width: 20%;
+   flex: 0 0 30%;
+   transition: all 0.3s ease-in-out;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.main .sidebarWrapper .sidebar{
+   width: 16%;
+   height: 100vh;
+   max-height: calc(100% - 70px);
+   position: fixed;
+   top: 70px;
+   left: 0px;
+   background: #fff;
+   overflow-y: scroll;
+   overflow-x: hidden;
+   padding-bottom: 40px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.main .sidebarWrapper .sidebar::-webkit-scrollbar{
+   width: 3px !important; 
+}
+.main .sidebarWrapper .sidebar::-webkit-scrollbar-thumb{
+   background: transparent !important;
+}
+.main .sidebarWrapper:hover .sidebar::-webkit-scrollbar{background: #f45050 !important;}
+
+.main .sidebarWrapper .sidebar ul {
+   margin-bottom: 0px;
+   padding: 10px 15px;
+}
+.main .sidebarWrapper .sidebar ul li {
+   list-style: none;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.main .sidebarWrapper .sidebar ul li button *{
+   color: #5e5d72  !important;
 }
 
-.App-link {
-  color: #61dafb;
+.main .sidebarWrapper .sidebar ul li button{
+   color: #5e5d72 !important;
+   text-align: left;
+   justify-content: left;
+   border-radius: 10px !important; 
+   padding: 12px 10px !important;
+   text-transform: capitalize !important;
+   font-weight: 600 !important;
+   font-family: "Open Sans", 
+   sans-serif !important;
+   font-size: 16px !important;
+}
+.main .sidebarWrapper .sidebar ul li button .icon{
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   width: 25px;
+   height: 25px;
+   margin-right: 10px;
+}
+.main .sidebarWrapper .sidebar ul li button .icon svg{
+   font-size: 22px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.main .sidebarWrapper .sidebar ul li button .arrow{
+   margin-left: auto;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   width: 25px;
+   height: 25px;
+   transition: all 0.3s ease-in-out;
+}
+
+.main .sidebarWrapper .sidebar ul li button:hover{
+   background: #f1f1f1 !important;
+}
+
+.main .sidebarWrapper .sidebar ul li button.active{
+   background: #f1f1f1 !important;
+}
+
+.main .sidebarWrapper .sidebar ul li button.active .arrow{
+   transform: rotate(90deg) ;
+}
+
+.main .sidebarWrapper .sidebar ul li button.active .icon svg{
+   color: #f45050 !important;
+}
+
+.main .sidebarWrapper .sidebar ul .submenu{
+   padding: 0px 45px;
+   position: relative;
+   transition: all 0.3s;
+   height: 0px;
+}
+.main .sidebarWrapper .sidebar ul .submenu::before{
+   content: '';
+   width: 2px;
+   height: 95%;
+   position: absolute;
+   top: 0px;
+   left: 21px;
+   background: rgba(0,0,0,0.2);
+}
+
+.main .sidebarWrapper .sidebar ul .submenu li {
+   width: 100%;
+   list-style: none;
+}
+
+.main .sidebarWrapper .sidebar ul .submenu li a{
+   color: #5e5d72 !important;
+   text-decoration:none ;
+   display: block;
+   padding: 6px 0px;
+   font-size: 14px;
+   font-weight: 500;
+   transition: all 0.3s;
+}
+
+.main .sidebarWrapper .sidebar ul .submenu li a:hover{
+   color:#f45050 !important
+}
+
+.main .sidebarWrapper .sidebar ul .submenuWrapper{
+   transition: all 0.4s;
+   height: 0px;
+   overflow: hidden;
+}
+
+.main .sidebarWrapper .sidebar ul .submenuWrapper.colapsed .submenu{
+   opacity: 0;
+}
+
+.main .sidebarWrapper .sidebar ul .submenuWrapper.colapse{
+   height: auto;
+   overflow: inherit;
+   opacity: 1;
+   padding: 10px 0px;
+}
+.main .sidebarWrapper .sidebar ul .submenuWrapper.colapse .submenu{
+   opacity: 1;
+   height: auto;
+}
+
+.logoutWrapper{
+   padding: 0px 25px;
+}
+
+.logoutWrapper .logoutBox{
+   height: 130px;
+   width: 100%;
+   padding: 25px;
+   background:#f86868 ;
+   border-radius: 10px;
+   display: flex;
+   align-items: center;
+   justify-content: center;  
+   position: relative;
+   overflow: hidden; 
+}
+
+.logoutWrapper .logoutBox::before{
+   content: '';
+   width: 70px;
+   height: 70px;
+   background: #ff0000;
+   border-radius: 100%;
+   position: absolute;
+   top: -20px;
+   right: -20px;
+   opacity: 0.5;
+}
+
+.logoutWrapper .logoutBox::after{
+   content: '';
+   width: 40px;
+   height: 40px;
+   background: #ff0000;
+   border-radius: 100%;
+   position: absolute;
+   top: -24px;
+   right: 60px;
+   opacity: 0.5;
+}
+
+.logoutWrapper .logoutBox button{
+   font-size: 14px !important;
+   font-weight: 600 !important;
+   background: #f45050;
+}
+
+.logoutWrapper .logoutBox button svg{
+   margin-right: 5px;
+   font-size: 18px !important;
 }
