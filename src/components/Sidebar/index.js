@@ -7,8 +7,9 @@ import { LuMessagesSquare } from "react-icons/lu";
 import { LuBellRing } from "react-icons/lu";
 import { IoSettingsOutline } from "react-icons/io5";
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { IoLogOutOutline } from "react-icons/io5";
+import { MyContext } from '../../App';
 
 
 
@@ -18,6 +19,8 @@ const Sidebar = () => {
 
     const [activeTab, setActiveTab] = useState(0);
     const [isToggleSubmenu, setIsToggleSubmenu] = useState(false);
+
+    const context = useContext(MyContext)
 
     const isOpenSubmenu = (index) => {
         setActiveTab(index);
