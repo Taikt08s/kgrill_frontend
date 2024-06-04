@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link } from "react-router-dom";
 import logo from '../../assets/images/logo.jpg';
 import { MdRestaurantMenu } from "react-icons/md";
@@ -19,6 +19,7 @@ import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import { FaShieldAlt } from "react-icons/fa";
 import Divider from '@mui/material/Divider';
+import { MyContext } from '../../App';
 
 
 const Header = () => {
@@ -27,6 +28,10 @@ const Header = () => {
     const [isOpennotificationsDrop, setisOpennotificationsDrop] = React.useState(null);
     const openMyAcc = Boolean(anchorEl);
     const openNotifications = Boolean(isOpennotificationsDrop);
+
+    const context = useContext(MyContext)
+
+
     const handleOpenMyAccDrop = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -56,7 +61,11 @@ const Header = () => {
                         </div>
 
                         <div className="col-sm-3 d-flex align-items-center part2 pl-4">
-                            <Button className="rounded-circle mr-3"><TiThMenu /></Button>
+                            <Button className="rounded-circle mr-3" onClick={() => context.setIsToggleSidebar(!context.isToggleSidebar)}>
+                                {
+                                    context.isToggleSidebar === false ? <TiThMenu /> : <MdRestaurantMenu />
+                                }
+                            </Button>
                             <SearchBox />
                         </div>
 
