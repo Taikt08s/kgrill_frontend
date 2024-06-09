@@ -48,7 +48,6 @@ const Dashboard = () => {
 
     const ITEM_HEIGHT = 48;
 
-
     return (
         <>
             <div className="right-content w-100">

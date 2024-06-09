@@ -1,4 +1,3 @@
-
 import { FaCircleUser } from "react-icons/fa6";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import Button from '@mui/material/Button';
@@ -84,7 +83,6 @@ const DashboardBox = (props) => {
                         <MenuItem onClick={handleClose}>
                             <RxTimer /> Last Year
                         </MenuItem>
-
                     </Menu>
                 </div>
             </div>

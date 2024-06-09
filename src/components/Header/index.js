@@ -1,6 +1,6 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
-import logo from '../../assets/images/logo.jpg';
+import logo from '../../assets/images/logo.png';
 import { MdRestaurantMenu } from "react-icons/md";
 import { TiThMenu } from "react-icons/ti";
 import Button from '@mui/material/Button';
@@ -20,7 +20,8 @@ import Logout from '@mui/icons-material/Logout';
 import { FaShieldAlt } from "react-icons/fa";
 import Divider from '@mui/material/Divider';
 import { MyContext } from '../../App';
-
+import { refreshToken, logout } from '../../api/axios';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
 
@@ -47,6 +48,29 @@ const Header = () => {
         setisOpennotificationsDrop(false)
     }
 
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            refreshToken().catch(() => {
+                navigate('/login');
+            });
+        }, 15 * 60 * 1000); // Refresh token every 15 minutes
+
+        return () => clearInterval(interval);
+    }, [navigate]);
+
+    const handleLogout = async () => {
+        try {
+            await logout();
+            navigate('/login');
+            console.log(refreshToken)
+        } catch (err) {
+            console.error(err);
+            alert('Logout failed!');
+        }
+    };
+
     return (
         <>
             <header className="d-flex align-items-center">
@@ -60,7 +84,7 @@ const Header = () => {
                             </Link>
                         </div>
 
-                        <div className="col-sm-3 d-flex align-items-center part2 pl-4">
+                        <div className="col-sm-3 d-flex align-items-center part2">
                             <Button className="rounded-circle mr-3" onClick={() => context.setIsToggleSidebar(!context.isToggleSidebar)}>
                                 {
                                     context.isToggleSidebar === false ? <TiThMenu /> : <MdRestaurantMenu />
@@ -102,56 +126,63 @@ const Header = () => {
                                 </Menu>
                             </div>
 
-                            <div className="myAccWrapper">
-                                <Button className="myAcc d-flex align-items-center"
-                                    onClick={handleOpenMyAccDrop}>
-                                    <div className="userImg">
-                                        <span className="rounded-circle">
-                                            <img src="https://clipground.com/images/admin-png-12.png" />
-                                        </span>
-                                    </div>
+                            {
+                                context.isLogin !== true ?
+                                    <Link to={'/login'}><Button className='btn-blue btn-lg btn-round'>Sign In</Button></Link>
+                                    :
+                                    <div className="myAccWrapper">
+                                        <Button className="myAcc d-flex align-items-center"
+                                            onClick={handleOpenMyAccDrop}>
+                                            <div className="userImg">
+                                                <span className="rounded-circle">
+                                                    <img src="https://clipground.com/images/admin-png-12.png" />
+                                                </span>
+                                            </div>
 
-                                    <div className="userInfor">
-                                        <h4>Doan Dinh Tin</h4>
-                                        <p className="mb-0">@tindinh00</p>
-                                    </div>
-                                </Button>
+                                            <div className="userInfor">
+                                                <h4>Doan Dinh Tin</h4>
+                                                <p className="mb-0">@tindinh00</p>
+                                            </div>
+                                        </Button>
 
-                                <Menu
-                                    anchorEl={anchorEl}
-                                    id="account-menu"
-                                    open={openMyAcc}
-                                    onClose={handleCloseMyAccDr}
-                                    onClick={handleCloseMyAccDr}
-                                    transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                                    anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                                >
-                                    <MenuItem onClick={handleCloseMyAccDr}>
-                                        <ListItemIcon>
-                                            <PersonAdd fontSize="small" />
-                                        </ListItemIcon>
-                                        My Account
-                                    </MenuItem>
-                                    <MenuItem onClick={handleCloseMyAccDr}>
-                                        <ListItemIcon>
-                                            <FaShieldAlt />
-                                        </ListItemIcon>
-                                        Reset Password
-                                    </MenuItem>
-                                    <MenuItem onClick={handleCloseMyAccDr}>
-                                        <ListItemIcon>
-                                            <Settings fontSize="small" />
-                                        </ListItemIcon>
-                                        Settings
-                                    </MenuItem>
-                                    <MenuItem onClick={handleCloseMyAccDr}>
-                                        <ListItemIcon>
-                                            <Logout fontSize="small" />
-                                        </ListItemIcon>
-                                        Logout
-                                    </MenuItem>
-                                </Menu>
-                            </div>
+                                        <Menu
+                                            anchorEl={anchorEl}
+                                            id="account-menu"
+                                            open={openMyAcc}
+                                            onClose={handleCloseMyAccDr}
+                                            onClick={handleCloseMyAccDr}
+                                            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                                            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                                        >
+                                            <MenuItem onClick={handleCloseMyAccDr}>
+                                                <ListItemIcon>
+                                                    <PersonAdd fontSize="small" />
+                                                </ListItemIcon>
+                                                My Account
+                                            </MenuItem>
+                                            <MenuItem onClick={handleCloseMyAccDr}>
+                                                <ListItemIcon>
+                                                    <FaShieldAlt />
+                                                </ListItemIcon>
+                                                Reset Password
+                                            </MenuItem>
+                                            <MenuItem onClick={handleCloseMyAccDr}>
+                                                <ListItemIcon>
+                                                    <Settings fontSize="small" />
+                                                </ListItemIcon>
+                                                Settings
+                                            </MenuItem>
+                                            <MenuItem onClick={handleLogout}>
+                                                <ListItemIcon>
+                                                    <Logout fontSize="small" />
+                                                </ListItemIcon>
+                                                Logout
+                                            </MenuItem>
+                                        </Menu>
+                                    </div>
+                            }
+
+
                         </div>
 
                     </div>

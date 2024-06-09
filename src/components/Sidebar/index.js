@@ -10,6 +10,8 @@ import { Link } from 'react-router-dom';
 import { useContext, useState } from 'react';
 import { IoLogOutOutline } from "react-icons/io5";
 import { MyContext } from '../../App';
+import { refreshToken, logout } from '../../api/axios';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -21,18 +23,30 @@ const Sidebar = () => {
     const [isToggleSubmenu, setIsToggleSubmenu] = useState(false);
 
     const context = useContext(MyContext)
+    const navigate = useNavigate();
 
     const isOpenSubmenu = (index) => {
         setActiveTab(index);
         setIsToggleSubmenu(!isToggleSubmenu);
     }
 
+    const handleLogout = async () => {
+        try {
+            await logout();
+            navigate('/login');
+            console.log(refreshToken)
+        } catch (err) {
+            console.error(err);
+            alert('Logout failed!');
+        }
+    };
+
     return (
         <>
             <div className="sidebar">
                 <ul>
                     <li>
-                        <Link to="/">
+                        <Link to="/dashboard">
                             <Button className={`w-100 ${activeTab === 0 ? 'active' : ''}`} onClick={() => isOpenSubmenu(0)}>
                                 <span className='icon'><MdOutlineSpaceDashboard /></span>
                                 Dashboard
@@ -145,7 +159,7 @@ const Sidebar = () => {
 
                 <div className='logoutWrapper'>
                     <div className='logoutBox'>
-                        <Button variant="contained" ><IoLogOutOutline />Logout</Button>
+                        <Button onClick={handleLogout} variant="contained" ><IoLogOutOutline />Logout</Button>
                     </div>
                 </div>
             </div>
