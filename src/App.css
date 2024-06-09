@@ -5,16 +5,59 @@
 body{ font-family: "Open Sans", sans-serif !important;background: #ebe9e9;
 overflow-x: hidden;}
 
-header{width: 100%; height: 70px;background: #fff; position: fixed;top: 0px;left: 0px; z-index: 1000;}
+::-webkit-scrollbar{
+   width: 5px !important;
+   height: 5px !important;
+}
+::-webkit-scrollbar-thumb{
+   background: #f45050 !important; 
+}
+::-webkit-scrollbar-track{
+   background: transparent !important;
+}
+
+.btn-blue{
+   background: #f45050 !important;
+   font-size: 14px !important;
+   font-weight: 600 !important;
+   color: #fff !important;
+   text-transform: capitalize !important;
+   border-radius: 8px !important;
+}
+
+.btn-lg{
+   padding: 5px 25px !important;
+}
+
+.btn-big{
+   padding: 10px 25px !important;
+   font-size: 16px !important;
+}
+
+.btn-round{
+   border-radius: 30px !important;
+}
+
+.full{
+   max-width: 100 !important;
+   flex: 0 0 100% !important;
+   width: 100%;
+}
+
+header{width: 100%; height: 70px;background: #fff; position: fixed;top: 0px;left: 0px; z-index: 1000; -webkit-backdrop-filter: blur(5px);
+backdrop-filter: blur(5px);}
 header .logo img{width: 70px;}
 header .logo span {color: #292929;font-weight: 800;font-size: 24px;}
 header .logo{text-decoration: none;}
 
 header button.rounded-circle{min-width: 40px !important;width: 40px !important;height: 40px !important; background: #f0f5ff !important; color: #f45050; }
-header button.rounded-circle svg{color: #292929; font-size: 18px !important;}
-header button.rounded-circle:hover svg{color: #f45050 !important; transition: all
+header button.rounded-circle svg{color: #292929; font-size: 18px !important; transition: all
    0.2s ease-in-out;}
+header button.rounded-circle:hover svg{color: #f45050 !important;}
 
+header .part2{
+   padding-left: 20px;
+}
 
 .searchBox{width: 400px; height: 40px; background: #f0f5ff; border-radius: 6px; padding: 3px 15px;}
 .searchBox input{background: transparent; border: 0px; outline: none;padding-left: 5px; font-size: 14px; color: #292929;}
@@ -505,4 +548,83 @@ table.v-align td .productBox{
    font-size: 13px;
    font-weight: 500;
    margin-bottom: 0px;
+}
+
+.loginSection{
+   width: 100%;
+   height: 100vh;
+   padding: 35px 25px;
+   background: #fff;
+   position: relative;
+
+}
+.loginPatern{
+   width: 118%;
+   height: 100%;
+   opacity: 0.3;
+   position: fixed;
+   top: 0px;
+   left: 0px;
+   z-index: 99;
+   pointer-events: none;
+}
+
+.loginSection .loginBox {
+   width: 400px;
+   height: auto;
+   margin: auto;
+}
+
+.loginSection .loginBox .wrapper{
+   width: 100%;
+   height: 300px;
+   background: #f0f0f0;
+   position: relative;
+   z-index: 100;
+   padding: 35px;
+}
+
+.loginSection .loginBox .wrapper .form-control{
+   background: #fff !important;
+   box-shadow: none !important;
+   outline: none !important;
+   border-radius: 8px !important;
+   font-size: 14px;
+   font-weight: 600;
+   height: 45px;
+   padding-left: 40px;
+}
+
+
+.loginSection .loginBox .wrapper .form-group.focus .icon svg{
+   color: #f45050 !important;
+}
+
+.loginSection .loginBox .wrapper .form-control:focus{
+   border: 1px solid #f45050 !important;
+}
+
+.loginSection .loginBox .wrapper .form-group .icon{
+   position: absolute;
+   top: 3px;
+   left: 10px;
+   z-index: 100;
+   font-size: 23px;
+}
+
+.loginSection .loginBox .wrapper .form-group .icon svg{
+   color: #5e5d72;
+}
+.toggleShowPassword{
+   position: absolute;
+   top: 8px;
+   right: 8px;
+   cursor: pointer;
+}
+.toggleShowPassword svg{
+   font-size: 22px;
+}
+
+.loading{
+   font-size: 14px;
 }
