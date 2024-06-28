@@ -624,3 +624,35 @@ table.v-align td .productBox{
 .toggleShowPassword svg{
    font-size: 22px;
 }
+.custom-modal {
+   max-width: 100%;
+   padding: 20px;
+   border-radius: 8px;
+}
+
+.custom-modal-header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+}
+
+.custom-modal-title {
+   font-size: 1.5rem;
+   font-weight: bold;
+}
+
+.custom-modal-actions {
+   display: flex;
+   justify-content: flex-end;
+   margin-top: 20px;
+}
+
+.custom-button {
+   background-color: #f45050;
+   color: white;
+}
+
+.custom-button:hover {
+   background-color: #d43d3d;
+}
+

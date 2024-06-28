@@ -1,4 +1,5 @@
-import { useContext, useEffect, useState } from 'react';
+// Import React dependencies
+import React, { useContext, useState, useEffect } from 'react';
 import Logo from '../../assets/images/kgrill-logo-dark.png';
 import { MyContext } from '../../App';
 import patern from '../../assets/images/pattern.jpg';
@@ -8,8 +9,11 @@ import { IoIosEye, IoIosEyeOff } from "react-icons/io";
 import Button from '@mui/material/Button';
 import { login } from "../../api/axios";
 import { useNavigate } from "react-router-dom";
-import Cookies from 'js-cookie';
 import CircularProgress from '@mui/material/CircularProgress';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { jwtDecode } from 'jwt-decode'; // Import jwt-decode library
+
 
 const Login = () => {
     const [inputIndex, setInputIndex] = useState(null);
@@ -17,7 +21,7 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [emailError, setEmailError] = useState(''); // Add state for email validation error
+    const [emailError, setEmailError] = useState('');
     const context = useContext(MyContext);
     const navigate = useNavigate();
 
@@ -38,24 +42,28 @@ const Login = () => {
         event.preventDefault();
 
         if (!validateEmail(email)) {
-            setEmailError('Nhập sai kiểu email');
+            setEmailError('Lỗi cấu trúc xxx@xxx.xxx');
             return;
         }
 
         setIsLoading(true);
 
         try {
-            const response = await login({ email, password });
-            const accessToken = response.data['access-token'];
-            const refreshToken = response.data['refresh-token'];
-            Cookies.set('access_token', accessToken, { secure: true });
-            Cookies.set('refresh_token', refreshToken, { secure: true });
+            const decodedPayload = await login({ email, password });
+            const role = decodedPayload.role;
+            if (role === 'ADMIN') {
+                navigate('/dashboard');
+            } else if (role === 'MANAGER') {
+                navigate('/manager');
+            } else {
+                navigate('/dashboard');
+            }
 
             context.setIsLogin(true);
             context.setisHideSidebarAndHeader(false);
-            navigate('/dashboard');
         } catch (error) {
-            console.error(error);
+            console.error('Error during login:', error);
+            toast.error('Tài khoản này không được phép đăng nhập vào hệ thống');
         } finally {
             setIsLoading(false);
         }
@@ -68,21 +76,21 @@ const Login = () => {
                 <div className="loginBox">
                     <div className="logo text-center">
                         <img src={Logo} width="100px" alt="KGrill Logo" />
-                        <h5 className='font-weight-bold'>Login to KGrill</h5>
+                        <h5 className='font-weight-bold'>Đăng Nhập Vào KGrill</h5>
                     </div>
 
                     <div className='wrapper mt-3 card border'>
-                        <form onSubmit={handleSubmit} noValidate> {/* Add noValidate attribute */}
+                        <form onSubmit={handleSubmit} noValidate>
                             <div className={`form-group mb-3 position-relative ${inputIndex === 0 ? 'focus' : ''} ${emailError ? 'has-error' : ''}`}>
                                 <span className='icon'><IoIosMail /></span>
                                 <input
-                                    type="text" // Changed from type="email" to type="text"
+                                    type="text"
                                     className={`form-control ${emailError ? 'is-invalid' : ''}`}
                                     placeholder='Enter your email'
                                     value={email}
                                     onChange={(event) => {
                                         setEmail(event.target.value);
-                                        if (emailError) setEmailError(''); // Clear error on change
+                                        if (emailError) setEmailError('');
                                     }}
                                     onFocus={() => focusInput(0)}
                                     onBlur={() => setInputIndex(null)}
@@ -110,11 +118,13 @@ const Login = () => {
 
                             <div className='form-group'>
                                 <Button className="btn-blue btn-lg w-100 btn-big" type="submit">
-                                    {isLoading ? <CircularProgress color="inherit" /> : 'Sign In'}
+                                    {isLoading ? <CircularProgress color="inherit" style={{ width: 28, height: 28 }} /> : 'Đăng Nhập'}
                                 </Button>
                             </div>
+                            <ToastContainer position="top-right" autoClose="3000" />
                         </form>
                     </div>
+
                 </div>
             </section>
         </>

@@ -1,30 +1,28 @@
+import React, { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import { FaAngleRight } from "react-icons/fa";
-import { MdOutlineSpaceDashboard } from "react-icons/md";
-import { MdOutlineDining } from "react-icons/md";
+import { MdOutlineSpaceDashboard, MdOutlineDining } from "react-icons/md";
 import { TiShoppingCart } from "react-icons/ti";
-import { LuMessagesSquare } from "react-icons/lu";
-import { LuBellRing } from "react-icons/lu";
-import { IoSettingsOutline } from "react-icons/io5";
-import { Link } from 'react-router-dom';
-import { useContext, useState } from 'react';
-import { IoLogOutOutline } from "react-icons/io5";
-import { MyContext } from '../../App';
-import { refreshToken, logout } from '../../api/axios';
-import { useNavigate } from 'react-router-dom';
+import { LuMessagesSquare, LuBellRing } from "react-icons/lu";
+import { IoSettingsOutline, IoLogOutOutline } from "react-icons/io5";
+import { Link, useNavigate } from 'react-router-dom';
+import { FaUsers } from "react-icons/fa6";
+import { logout } from '../../api/axios';
+import { jwtDecode } from 'jwt-decode'; // Correct import for jwt-decode
 
-
-
-
-
-const Sidebar = () => {
-
+const Sidebar = (decodedPayload) => {
     const [activeTab, setActiveTab] = useState(0);
     const [isToggleSubmenu, setIsToggleSubmenu] = useState(false);
-
-    const context = useContext(MyContext)
+    const [userRole, setUserRole] = useState(null);
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const tokenPayload = localStorage.getItem('decoded_payload');
+        const payloadObj = JSON.parse(tokenPayload);
+        const role = payloadObj.role;
+        setUserRole(role);
+
+    }, []);
     const isOpenSubmenu = (index) => {
         setActiveTab(index);
         setIsToggleSubmenu(!isToggleSubmenu);
@@ -34,136 +32,127 @@ const Sidebar = () => {
         try {
             await logout();
             navigate('/login');
-            console.log(refreshToken)
         } catch (err) {
             console.error(err);
             alert('Logout failed!');
         }
     };
 
+    const adminSidebarItems = (
+        <>
+            <li>
+                <Link to="/dashboard">
+                    <Button className={`w-100 ${activeTab === 0 ? 'active' : ''}`} onClick={() => isOpenSubmenu(0)}>
+                        <span className='icon'><MdOutlineSpaceDashboard /></span>
+                        Dashboard
+                        <span className='arrow'><FaAngleRight /></span>
+                    </Button>
+                </Link>
+            </li>
+            <li>
+                <Link to="/Products">
+                    <Button className={`w-100 ${activeTab === 1 && isToggleSubmenu === true ? 'active' : ''}`} onClick={() => isOpenSubmenu(1)}>
+                        <span className='icon'><MdOutlineDining /></span>
+                        Products
+                        <span className='arrow'><FaAngleRight /></span>
+                    </Button>
+                </Link>
+                <div className={`submenuWrapper ${activeTab === 1 && isToggleSubmenu === true ? 'colapse' : 'colapsed'}`}>
+                    <ul className='submenu'>
+                        <li><Link to="#">Product List</Link></li>
+                        <li><Link to="#">Product View</Link></li>
+                        <li><Link to="#">Product Upload</Link></li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <Link to="/ManageUser">
+                    <Button className={`w-100 ${activeTab === 2 ? 'active' : ''}`} onClick={() => isOpenSubmenu(2)}>
+                        <span className='icon'><FaUsers /></span>
+                        Manage User
+                        <span className='arrow'><FaAngleRight /></span>
+                    </Button>
+                </Link>
+            </li>
+            <li>
+                <Button className={`w-100 ${activeTab === 3 ? 'active' : ''}`} onClick={() => isOpenSubmenu(3)}>
+                    <span className='icon'><LuMessagesSquare /></span>
+                    Messages
+                    <span className='arrow'><FaAngleRight /></span>
+                </Button>
+            </li>
+            <li>
+                <Button className={`w-100 ${activeTab === 4 ? 'active' : ''}`} onClick={() => isOpenSubmenu(4)}>
+                    <span className='icon'><LuBellRing /></span>
+                    Notifications
+                    <span className='arrow'><FaAngleRight /></span>
+                </Button>
+            </li>
+            <li>
+                <Button className={`w-100 ${activeTab === 5 ? 'active' : ''}`} onClick={() => isOpenSubmenu(5)}>
+                    <span className='icon'><IoSettingsOutline /></span>
+                    Setting
+                    <span className='arrow'><FaAngleRight /></span>
+                </Button>
+            </li>
+        </>
+    );
+
+    const managerSidebarItems = (
+        <>
+            <li>
+                <Link to="/dashboard">
+                    <Button className={`w-100 ${activeTab === 0 ? 'active' : ''}`} onClick={() => isOpenSubmenu(0)}>
+                        <span className='icon'><MdOutlineSpaceDashboard /></span>
+                        Dashboard
+                        <span className='arrow'><FaAngleRight /></span>
+                    </Button>
+                </Link>
+            </li>
+            <li>
+                <Link to="/Products">
+                    <Button className={`w-100 ${activeTab === 1 && isToggleSubmenu === true ? 'active' : ''}`} onClick={() => isOpenSubmenu(1)}>
+                        <span className='icon'><MdOutlineDining /></span>
+                        Products
+                        <span className='arrow'><FaAngleRight /></span>
+                    </Button>
+                </Link>
+            </li>
+            <li>
+                <Button className={`w-100 ${activeTab === 3 ? 'active' : ''}`} onClick={() => isOpenSubmenu(3)}>
+                    <span className='icon'><LuMessagesSquare /></span>
+                    Messages
+                    <span className='arrow'><FaAngleRight /></span>
+                </Button>
+            </li>
+            <li>
+                <Button className={`w-100 ${activeTab === 4 ? 'active' : ''}`} onClick={() => isOpenSubmenu(4)}>
+                    <span className='icon'><LuBellRing /></span>
+                    Notifications
+                    <span className='arrow'><FaAngleRight /></span>
+                </Button>
+            </li>
+        </>
+    );
+
     return (
         <>
             <div className="sidebar">
                 <ul>
-                    <li>
-                        <Link to="/dashboard">
-                            <Button className={`w-100 ${activeTab === 0 ? 'active' : ''}`} onClick={() => isOpenSubmenu(0)}>
-                                <span className='icon'><MdOutlineSpaceDashboard /></span>
-                                Dashboard
-                                <span className='arrow'><FaAngleRight /></span>
-                            </Button>
-                        </Link>
-                    </li>
-                    <li>
-
-                        <Button className={`w-100 ${activeTab === 1 && isToggleSubmenu === true ? 'active' : ''}`} onClick={() => isOpenSubmenu(1)}>
-                            <span className='icon'><MdOutlineDining /></span>
-                            Products
-                            <span className='arrow'><FaAngleRight /></span>
-                        </Button>
-                        <div className={`submenuWrapper ${activeTab === 1 && isToggleSubmenu === true ? 'colapse' : 'colapsed'}`}>
-                            <ul className='submenu'>
-                                <li><Link to="#">Product List</Link></li>
-                                <li><Link to="#">Product View</Link></li>
-                                <li><Link to="#">Product Upload</Link></li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li>
-                        <Button className={`w-100 ${activeTab === 2 ? 'active' : ''}`} onClick={() => isOpenSubmenu(2)}>
-                            <span className='icon'><TiShoppingCart /></span>
-                            Orders
-                            <span className='arrow'><FaAngleRight /></span>
-                        </Button>
-                    </li>
-                    <li>
-                        <Button className={`w-100 ${activeTab === 3 ? 'active' : ''}`} onClick={() => isOpenSubmenu(3)}>
-                            <span className='icon'><LuMessagesSquare /></span>
-                            Messages
-                            <span className='arrow'><FaAngleRight /></span>
-                        </Button>
-                    </li>
-                    <li>
-                        <Button className={`w-100 ${activeTab === 4 ? 'active' : ''}`} onClick={() => isOpenSubmenu(4)}>
-                            <span className='icon'><LuBellRing /></span>
-                            Notifications
-                            <span className='arrow'><FaAngleRight /></span>
-                        </Button>
-                    </li>
-                    <li>
-                        <Button className={`w-100 ${activeTab === 5 ? 'active' : ''}`} onClick={() => isOpenSubmenu(5)}>
-                            <span className='icon'><IoSettingsOutline /></span>
-                            Setting
-                            <span className='arrow'><FaAngleRight /></span>
-                        </Button>
-                    </li>
-                    <li>
-                        <Button className='w-100'>
-                            <span className='icon'><MdOutlineSpaceDashboard /></span>
-                            Dashboard
-                            <span className='arrow'><FaAngleRight /></span>
-                        </Button>
-                    </li>
-                    <li>
-                        <Button className='w-100'>
-                            <span className='icon'><MdOutlineDining /></span>
-                            Products
-                            <span className='arrow'><FaAngleRight /></span>
-                        </Button>
-                    </li>
-                    <li>
-                        <Button className='w-100'>
-                            <span className='icon'><TiShoppingCart /></span>
-                            Orders
-                            <span className='arrow'><FaAngleRight /></span>
-                        </Button>
-                    </li>
-                    <li>
-                        <Button className='w-100'>
-                            <span className='icon'><LuMessagesSquare /></span>
-                            Messages
-                            <span className='arrow'><FaAngleRight /></span>
-                        </Button>
-                    </li>
-                    <li>
-                        <Button className='w-100'>
-                            <span className='icon'><LuBellRing /></span>
-                            Notifications
-                            <span className='arrow'><FaAngleRight /></span>
-                        </Button>
-                    </li>
-                    <li>
-                        <Button className='w-100'>
-                            <span className='icon'><IoSettingsOutline /></span>
-                            Setting
-                            <span className='arrow'><FaAngleRight /></span>
-                        </Button>
-                    </li>
-                    <li>
-                        <Button className='w-100'>
-                            <span className='icon'><LuBellRing /></span>
-                            Notifications
-                            <span className='arrow'><FaAngleRight /></span>
-                        </Button>
-                    </li>
-                    <li>
-                        <Button className='w-100'>
-                            <span className='icon'><IoSettingsOutline /></span>
-                            Setting
-                            <span className='arrow'><FaAngleRight /></span>
-                        </Button>
-                    </li>
+                    {userRole === 'ADMIN' && adminSidebarItems}
+                    {userRole === 'MANAGER' && managerSidebarItems}
                 </ul>
 
                 <br />
 
                 <div className='logoutWrapper'>
                     <div className='logoutBox'>
-                        <Button onClick={handleLogout} variant="contained" ><IoLogOutOutline />Logout</Button>
+                        <Button onClick={handleLogout} variant="contained"><IoLogOutOutline />Logout</Button>
                     </div>
                 </div>
             </div>
         </>
     )
 }
-export default Sidebar
+
+export default Sidebar;

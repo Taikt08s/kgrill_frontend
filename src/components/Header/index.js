@@ -64,7 +64,6 @@ const Header = () => {
         try {
             await logout();
             navigate('/login');
-            console.log(refreshToken)
         } catch (err) {
             console.error(err);
             alert('Logout failed!');
@@ -78,7 +77,7 @@ const Header = () => {
                     <div className="row d-flex align-items-center w-100">
                         {/*Logo Wraoore */}
                         <div className="col-sm-2 part1">
-                            <Link to={'/'} className="d-flex align-items-center logo">
+                            <Link to={'/dashboard'} className="d-flex align-items-center logo">
                                 <img src={logo} />
                                 <span className="ml-2">KGRILL</span>
                             </Link>

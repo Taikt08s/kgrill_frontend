@@ -1,16 +1,7 @@
-import DashboardBox from "./components/dashboardBox";
-import { FaCircleUser } from "react-icons/fa6";
-import { TiShoppingCart } from "react-icons/ti";
-import { RiShoppingBasket2Line } from "react-icons/ri";
-import { TbStars } from "react-icons/tb";
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import React from "react";
-import { RxTimer } from "react-icons/rx";
 import Button from '@mui/material/Button';
-import { BsThreeDotsVertical } from "react-icons/bs";
-import { Chart } from "react-google-charts";
-import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { useState } from "react";
@@ -20,101 +11,20 @@ import { MdDeleteForever } from "react-icons/md";
 import Pagination from '@mui/material/Pagination';
 
 
-export const data = [
-    ["Year", "Sales", "Expenses"],
-    ["2004", 1000, 400],
-    ["2005", 1170, 460],
-    ["2006", 660, 1120],
-    ["2007", 1030, 540],
-];
-
-export const options = {
-    'backgroundColor': 'transparent',
-    'chartArea': { 'width': '100%', 'height': '100%' }
-};
-
-const Dashboard = () => {
+const Products = () => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const [showBy, setshowBy] = useState('');
     const [showBysetCatby, setshowBysetCatby] = useState('');
 
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
 
-    const ITEM_HEIGHT = 48;
 
     return (
         <>
             <div className="right-content w-100">
-                <div className="row dashboardBoxWrapperRow">
-                    <div className="col-md-8">
-                        <div className="dashboardBoxWrapper d-flex">
-                            <DashboardBox color={["#1da256", "#48d483"]} icon={<FaCircleUser />}
-                                grow={true} />
-                            <DashboardBox color={["#c012e2", "#eb64fe"]} icon={<TiShoppingCart />} />
-                            <DashboardBox color={["#2c78e5", "#60aff5"]} icon={<RiShoppingBasket2Line />} />
-                            <DashboardBox color={["#e1950e", "#f3cd29"]} icon={<TbStars />} />
-                        </div>
-                    </div>
 
-                    <div className="col-md-4 pl-0">
-                        <div className="box graphBox">
-                            <div className="d-flex align-items-center w-100 bottomEle">
-                                <h6 className="text-white mb-0 mt-0">Total Sales</h6>
-                                <div className="ml-auto">
-                                    <Button className="ml-auto toggleIcon" onClick={handleClick}><BsThreeDotsVertical /></Button>
-                                    <Menu
-                                        className="dropdown_menu"
-                                        MenuListProps={{
-                                            'aria-labelledby': 'long-button',
-                                        }}
-                                        anchorEl={anchorEl}
-                                        open={open}
-                                        onClose={handleClose}
-                                        PaperProps={{
-                                            style: {
-                                                maxHeight: ITEM_HEIGHT * 4.5,
-                                                width: '20ch',
-                                            },
-                                        }}
-                                    >
-
-                                        <MenuItem onClick={handleClose}>
-                                            <RxTimer /> Last Day
-                                        </MenuItem>
-                                        <MenuItem onClick={handleClose}>
-                                            <RxTimer /> Last Week
-                                        </MenuItem>
-                                        <MenuItem onClick={handleClose}>
-                                            <RxTimer /> Last Month
-                                        </MenuItem>
-                                        <MenuItem onClick={handleClose}>
-                                            <RxTimer /> Last Year
-                                        </MenuItem>
-
-                                    </Menu>
-                                </div>
-                            </div>
-                            <h3 className="text-white font-weight-bold">$3,123,123.123</h3>
-                            <p>$3,123.12 in last month</p>
-
-                            <Chart
-                                chartType="LineChart"
-                                width="300px"
-                                height="170px"
-                                data={data}
-                                options={options}
-                            />
-                        </div>
-                    </div>
-                </div>
                 <div className="card shadow border-0 p-3 mt-4">
-                    <h3 className="hd">Các Sản Phẩm Bán Chạy Nhất</h3>
+                    <h3 className="hd">All Products</h3>
 
                     <div className="row cardFilters mt-3">
                         <div className="col-md-3">
@@ -139,7 +49,7 @@ const Dashboard = () => {
                             </FormControl>
                         </div>
                         <div className="col-md-3">
-                            <h4>Thể Loại</h4>
+                            <h4>CATRGORY BY</h4>
                             <FormControl size="small" className="w-100">
                                 <Select
                                     labelId="demo-simple-select-filled-label"
@@ -169,31 +79,31 @@ const Dashboard = () => {
                                         UID
                                     </th>
                                     <th style={{ width: '300px' }}>
-                                        Sản Phẩm
+                                        PRODUCT
                                     </th>
                                     <th>
-                                        Loại
+                                        CATEGORY
                                     </th>
                                     <th>
-                                        Thương Hiệu
+                                        BRAND
                                     </th>
                                     <th>
-                                        Giá
+                                        PRICE
                                     </th>
                                     <th>
-                                        Có Sẵn
+                                        STOCK
                                     </th>
                                     <th>
-                                        Đáng Giá
+                                        RATING
                                     </th>
                                     <th>
-                                        Đang Đặt Hàng
+                                        ORDER
                                     </th>
                                     <th>
-                                        Đã Bán
+                                        SALES
                                     </th>
                                     <th>
-                                        Hành Động
+                                        ACTION
                                     </th>
                                 </tr>
                             </thead>
@@ -562,4 +472,4 @@ const Dashboard = () => {
         </>
     )
 }
-export default Dashboard;
+export default Products;
