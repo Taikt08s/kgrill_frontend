@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { compactDecrypt, importJWK } from 'jose';
+import { compactDecrypt } from 'jose';
 
 // Function to decode access token
 const decodeAccessToken = async (accessToken, base64Secret) => {
@@ -20,7 +20,7 @@ const decodeAccessToken = async (accessToken, base64Secret) => {
     }
 };
 
-const API_URL = process.env.REACT_APP_API_URL || 'https://kgrill-backend.onrender.com/api/v1';
+const API_URL = process.env.REACT_APP_API_URL || 'https://kgrill-backend-xfzz.onrender.com/api/v1';
 
 const axiosInstance = axios.create({
     baseURL: API_URL,
@@ -60,11 +60,8 @@ export const login = async (credentials) => {
 
         const accessToken = response.data.data['access_token'];
         const refreshToken = response.data.data['refresh_token'];
-
         // Decode access token to get payload
         const decodedPayload = await decodeAccessToken(accessToken, 'NDc0OTM5MThhZDgyM2Q1NTc5ZGRiZmE4OTRjYjUxMTY=');
-
-        // Store tokens and decoded payload in localStorage and cookies
         storeTokensAndPayload(accessToken, refreshToken, decodedPayload);
 
         return decodedPayload; // Return decoded payload
@@ -77,16 +74,18 @@ export const login = async (credentials) => {
 
 export const refreshToken = async () => {
     try {
+        const token = Cookies.get('access_token');
         const refreshToken = localStorage.getItem('refresh_token');
         if (!refreshToken) {
             throw new Error('Refresh token is missing');
         }
 
         const response = await axiosInstance.post('/auth/refresh-token', {
-            refreshToken: refreshToken
+            refresh_token: refreshToken
         }, {
             headers: {
-                'Authorization': `Bearer ${refreshToken}`
+                Authorization: `Bearer ${refreshToken}`,
+                'Content-Type': 'application/json',
             }
         });
 
@@ -97,17 +96,27 @@ export const refreshToken = async () => {
         }
 
         // Decode new access token to get payload
-        const decodedPayload = await decodeAccessToken(newAccessToken, 'TIOPkmCHITnbApumTo0G1qDdZHdGl0oN');
+        const decodedPayload = await decodeAccessToken(newAccessToken, 'NDc0OTM5MThhZDgyM2Q1NTc5ZGRiZmE4OTRjYjUxMTY=');
 
-        // Store tokens and decoded payload in localStorage and cookies
+        // Store tokens and decoded payload in cookies and localStorage
         storeTokensAndPayload(newAccessToken, refreshToken, decodedPayload);
 
         return decodedPayload; // Return decoded payload
     } catch (error) {
         console.error('Error during token refresh:', error);
+
+        // Log detailed response from Axios error
+        if (error.response) {
+            console.error('Error response data:', error.response.data);
+            console.error('Error response status:', error.response.status);
+            console.error('Error response headers:', error.response.headers);
+        }
+
         throw error;
     }
 };
+
+
 
 export const logout = async () => {
     try {
@@ -115,9 +124,8 @@ export const logout = async () => {
         if (!refreshToken) {
             throw new Error('Refresh token is missing');
         }
-
         const response = await axiosInstance.post('/auth/logout', {
-            refreshToken: refreshToken
+            refresh_token: refreshToken
         }, {
             headers: {
                 'Authorization': `Bearer ${refreshToken}`
@@ -137,6 +145,7 @@ export const logout = async () => {
 };
 
 // Helper function to store tokens and payload in localStorage and cookies
+// Helper function to store tokens and payload in localStorage and cookies
 const storeTokensAndPayload = (accessToken, refreshToken, decodedPayload) => {
     // Split the access token
     const tokenParts = accessToken.split('.');
@@ -149,6 +158,9 @@ const storeTokensAndPayload = (accessToken, refreshToken, decodedPayload) => {
     // Store signature in cookies
     Cookies.set('access_token_signature', tokenSignature, { secure: true, sameSite: 'strict' });
 
+    // Store the entire access token in cookies
+    Cookies.set('access_token', accessToken, { secure: true, sameSite: 'strict' });
+
     // Store refresh token in localStorage
     localStorage.setItem('refresh_token', refreshToken);
 
@@ -156,10 +168,12 @@ const storeTokensAndPayload = (accessToken, refreshToken, decodedPayload) => {
     localStorage.setItem('decoded_payload', JSON.stringify(decodedPayload));
 };
 
+
 // Helper function to clear tokens and payload from localStorage and cookies
 const clearTokensAndPayload = () => {
     localStorage.removeItem('access_token_header_payload');
     localStorage.removeItem('refresh_token');
+    Cookies.remove('access_token');
     Cookies.remove('access_token_signature');
     localStorage.removeItem('decoded_payload');
 };

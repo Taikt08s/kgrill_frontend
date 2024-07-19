@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
-import { Box, Button, Modal, TextField, Typography, MenuItem, Select, InputLabel, FormControl, IconButton, InputAdornment } from '@mui/material';
-import { MdOutlineModeEdit } from "react-icons/md";
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import '../../../App.css';
-import { Link } from "react-router-dom";
-import logo from '../../../assets/images/logo.png';
+import { Box, Button, Modal, Typography } from '@mui/material';
+import '../../../../App.css';
+import logo from '../../../../assets/images/logo.png';
 import { MdDeleteForever } from "react-icons/md";
 
-const Delete = ({ user }) => {
+const DeleteProduct = ({ user }) => {
     const [open, setOpen] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     ;
@@ -45,14 +42,10 @@ const Delete = ({ user }) => {
                         <img src={logo} style={{ maxWidth: '120px', maxHeight: '120px', textAlign: 'center', marginTop: '-30px', marginBottom: '-20px' }} />
                     </div>
 
-
-
-
-
                     <Typography variant="h6" component="h2" gutterBottom sx={{ textAlign: 'center', fontWeight: 'bold' }}>
-                        Bạn có chắc chắn muốn xóa không?
+                        Bạn có chắc chắn muốn xóa sản phẩm này không?
                     </Typography>
-                    <Box mt={2} display="flex" justifyContent="flex-end">
+                    <Box mt={2} display="flex" justifyContent="flex-end" style={{ display: 'flex', justifyContent: 'center' }}>
                         <Button variant="contained" color="secondary" onClick={handleClose}>
                             Đóng
                         </Button>
@@ -66,4 +59,4 @@ const Delete = ({ user }) => {
     );
 };
 
-export default Delete;
+export default DeleteProduct;

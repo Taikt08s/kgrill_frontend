@@ -1,19 +1,18 @@
 import React, { useState } from 'react';
 import { Box, Button, Modal, TextField, Typography, MenuItem, Select, InputLabel, FormControl, IconButton, InputAdornment } from '@mui/material';
-import { MdOutlineModeEdit } from "react-icons/md";
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import '../../../App.css';
-import { Link } from "react-router-dom";
-import logo from '../../../assets/images/logo.png';
+import '../../../../App.css';
+import logo from '../../../../assets/images/logo.png';
+import { IoMdAdd } from "react-icons/io";
 
-const EditUser = ({ user }) => {
+const AddUser = ({ onSave }) => {
     const [open, setOpen] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
-        id: user.id,
-        fullName: user.fullName,
-        email: user.email,
-        address: user.Address,
-        role: user.role
+        fullName: '',
+        email: '',
+        password: '',
+        role: ''
     });
 
     const handleOpen = () => setOpen(true);
@@ -25,14 +24,25 @@ const EditUser = ({ user }) => {
     };
 
     const handleSave = () => {
-        // Logic to save changes goes here
+        // Logic to save new user goes here
         console.log(formData);
+        if (onSave) {
+            onSave(formData);
+        }
         handleClose();
     };
 
+    const handleClickShowPassword = () => setShowPassword(!showPassword);
+    const handleMouseDownPassword = (event) => event.preventDefault();
+
     return (
         <>
-            <Button className="success" color="success" onClick={handleOpen}><MdOutlineModeEdit /></Button>
+            <Button variant="contained" color="error" onClick={handleOpen} className="custom-button">
+                <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '25px', height: '25px' }}>
+                    <IoMdAdd />
+                </span>
+                Thêm
+            </Button>
 
             <Modal open={open} onClose={handleClose}>
                 <Box sx={{
@@ -52,26 +62,11 @@ const EditUser = ({ user }) => {
                         <img src={logo} style={{ maxWidth: '120px', maxHeight: '120px', textAlign: 'center', marginTop: '-30px', marginBottom: '-20px' }} />
                     </div>
 
-
-
-
-
                     <Typography variant="h6" component="h2" gutterBottom sx={{ textAlign: 'center', fontWeight: 'bold' }}>
-                        Chỉnh sửa thông tin
+                        Thêm người dùng mới
                     </Typography>
 
                     <form>
-                        <TextField
-                            margin="normal"
-                            fullWidth
-                            label="ID"
-                            name="id"
-                            value={formData.id}
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                            variant="outlined"
-                        />
                         <TextField
                             margin="normal"
                             fullWidth
@@ -93,11 +88,26 @@ const EditUser = ({ user }) => {
                         <TextField
                             margin="normal"
                             fullWidth
-                            label="Address"
-                            name="address"
-                            value={formData.address}
+                            label="Password"
+                            name="password"
+                            type={showPassword ? 'text' : 'password'}
+                            value={formData.password}
                             onChange={handleChange}
                             variant="outlined"
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={handleClickShowPassword}
+                                            onMouseDown={handleMouseDownPassword}
+                                            edge="end"
+                                        >
+                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                )
+                            }}
                         />
                         <FormControl fullWidth margin="normal" variant="outlined">
                             <InputLabel>Role</InputLabel>
@@ -117,7 +127,7 @@ const EditUser = ({ user }) => {
                             Đóng
                         </Button>
                         <Button variant="contained" sx={{ backgroundColor: '#f45050', '&:hover': { backgroundColor: '#d43d3d' }, ml: 2 }} onClick={handleSave}>
-                            Lưu Thay Đổi
+                            Lưu
                         </Button>
                     </Box>
                 </Box>
@@ -126,4 +136,4 @@ const EditUser = ({ user }) => {
     );
 };
 
-export default EditUser;
+export default AddUser;

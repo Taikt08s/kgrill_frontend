@@ -1,4 +1,3 @@
-// Import React dependencies
 import React, { useContext, useState, useEffect } from 'react';
 import Logo from '../../assets/images/kgrill-logo-dark.png';
 import { MyContext } from '../../App';
@@ -12,7 +11,6 @@ import { useNavigate } from "react-router-dom";
 import CircularProgress from '@mui/material/CircularProgress';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { jwtDecode } from 'jwt-decode'; // Import jwt-decode library
 
 
 const Login = () => {
@@ -54,7 +52,7 @@ const Login = () => {
             if (role === 'ADMIN') {
                 navigate('/dashboard');
             } else if (role === 'MANAGER') {
-                navigate('/manager');
+                navigate('/dashboard');
             } else {
                 navigate('/dashboard');
             }
