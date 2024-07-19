@@ -93,7 +93,7 @@ const Orders = () => {
                                         <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Order_status}</td>
                                         <td>
                                             <div className="actions d-flex align-items-center" style={{ display: 'flex', justifyContent: 'center' }}>
-                                                <ShipperSelect />
+                                                <ShipperSelect orderId={order.Delivery_Order_Id} refreshOrders={refreshOrders} />
                                                 <CancelOrder orderId={order.Delivery_Order_Id} refreshOrders={refreshOrders} />
                                             </div>
                                         </td>

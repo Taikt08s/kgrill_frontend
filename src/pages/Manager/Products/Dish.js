@@ -90,11 +90,7 @@ const DishManager = () => {
                                         <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{dish.dish_id}</td>
                                         <td>
                                             <div className="d-flex align-items-center productBox">
-                                                <div className="imgWrapper">
-                                                    <div className="img">
-                                                        <img src="https://nauankhongkho.com/wp-content/uploads/2015/11/lau-de-1.jpg" className="w-100" alt={dish.dish_name} />
-                                                    </div>
-                                                </div>
+
                                                 <div className="info pl-0">
                                                     <h6>{dish.dish_name}</h6>
                                                 </div>
