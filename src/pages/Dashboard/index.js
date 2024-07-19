@@ -114,7 +114,7 @@ const Dashboard = () => {
                     </div>
                 </div>
                 <div className="card shadow border-0 p-3 mt-4">
-                    <h3 className="hd">Best Selling Products</h3>
+                    <h3 className="hd">Các Sản Phẩm Bán Chạy Nhất</h3>
 
                     <div className="row cardFilters mt-3">
                         <div className="col-md-3">
@@ -139,7 +139,7 @@ const Dashboard = () => {
                             </FormControl>
                         </div>
                         <div className="col-md-3">
-                            <h4>CATRGORY BY</h4>
+                            <h4>Thể Loại</h4>
                             <FormControl size="small" className="w-100">
                                 <Select
                                     labelId="demo-simple-select-filled-label"
@@ -169,31 +169,31 @@ const Dashboard = () => {
                                         UID
                                     </th>
                                     <th style={{ width: '300px' }}>
-                                        PRODUCT
+                                        Sản Phẩm
                                     </th>
                                     <th>
-                                        CATEGORY
+                                        Loại
                                     </th>
                                     <th>
-                                        BRAND
+                                        Thương Hiệu
                                     </th>
                                     <th>
-                                        PRICE
+                                        Giá
                                     </th>
                                     <th>
-                                        STOCK
+                                        Có Sẵn
                                     </th>
                                     <th>
-                                        RATING
+                                        Đáng Giá
                                     </th>
                                     <th>
-                                        ORDER
+                                        Đang Đặt Hàng
                                     </th>
                                     <th>
-                                        SALES
+                                        Đã Bán
                                     </th>
                                     <th>
-                                        ACTION
+                                        Hành Động
                                     </th>
                                 </tr>
                             </thead>

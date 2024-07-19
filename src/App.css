@@ -5,16 +5,21 @@
 body{ font-family: "Open Sans", sans-serif !important;background: #ebe9e9;
 overflow-x: hidden;}
 
-::-webkit-scrollbar{
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
    width: 5px !important;
    height: 5px !important;
 }
-::-webkit-scrollbar-thumb{
-   background: #f45050 !important; 
+
+::-webkit-scrollbar-thumb {
+   background: #f45050 !important;
+   border-radius: 10px !important;
 }
-::-webkit-scrollbar-track{
+
+::-webkit-scrollbar-track {
    background: transparent !important;
 }
+
 
 .btn-blue{
    background: #f45050 !important;
@@ -477,6 +482,28 @@ h1, h2, h3, h4, h5, h6{
    margin: 0px 3px !important;
 }
 
+.table tbody .actionschitiet button{
+   min-width: 33px !important;
+   width: 135px !important;
+   height: 33px !important;
+   margin: 0px 3px !important;
+}
+
+.table tbody .actionschitietbill button{
+   min-width: 33px !important;
+   width: 155px !important;
+   height: 33px !important;
+   margin: 0px 3px !important;
+}
+
+.table tbody .actionschitietbill button path{
+   font-size: 33px !important;
+}
+
+.table tbody .actionschitiet button.secondary{
+   background: rgba(203,60,231,0.2) !important;
+}
+
 .table tbody .actions button.secondary{
    background: rgba(203,60,231,0.2) !important;
 }
@@ -623,4 +650,47 @@ table.v-align td .productBox{
 }
 .toggleShowPassword svg{
    font-size: 22px;
+}
+.custom-modal {
+   max-width: 100%;
+   padding: 20px;
+   border-radius: 8px;
+}
+
+.custom-modal-header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+}
+
+.custom-modal-title {
+   font-size: 1.5rem;
+   font-weight: bold;
+}
+
+.custom-modal-actions {
+   display: flex;
+   justify-content: flex-end;
+   margin-top: 20px;
+}
+
+.custom-button {
+   background-color: #f45050;
+   color: white;
+}
+
+.custom-button:hover {
+   background-color: #d43d3d;
+}
+
+
+/* App.css or a specific CSS file for your component */
+
+.textField {
+   margin: 16px 0;
+   width: 100%;
+}
+
+.textField input[type="file"] {
+   padding: 16.5px 14px;
 }
