@@ -4,10 +4,8 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Pagination from '@mui/material/Pagination';
-import SearchBox from '../../../components/SearchBox';
 import DetailBill from './components/detailBill'; // Đảm bảo import chính xác đường dẫn
 import Cookies from 'js-cookie';
-
 
 const Revenue = () => {
     const [revenueData, setRevenueData] = useState([]);
@@ -60,6 +58,18 @@ const Revenue = () => {
         setPeriod(selectedPeriod);
     };
 
+    const formatDateForDetail = (order_date, period) => {
+        const date = new Date(order_date);
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        if (period === 'yearly') {
+            return `${year}-01-01`;
+        } else if (period === 'monthly') {
+            return `${year}-${month}`;
+        }
+        return order_date; // For daily, return the original date
+    };
+
     return (
         <>
             <div className="right-content w-100">
@@ -69,7 +79,6 @@ const Revenue = () => {
                     </div>
 
                     <div className="d-flex justify-content-between align-items-center mb-3">
-
                         <FormControl sx={{ minWidth: 120, ml: 2 }}>
                             <Select
                                 value={period}
@@ -102,7 +111,7 @@ const Revenue = () => {
                             <tbody>
                                 {loading ? (
                                     <tr>
-                                        <td colSpan="9" style={{ textAlign: 'center', verticalAlign: 'middle' }}>Loading...</td>
+                                        <td colSpan="8" style={{ textAlign: 'center', verticalAlign: 'middle' }}>Loading...</td>
                                     </tr>
                                 ) : (
                                     revenueData.map((order, index) => (
@@ -115,12 +124,7 @@ const Revenue = () => {
                                             <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.cancelled_order.toLocaleString('vi-VN')} VND</td>
                                             <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.total_revenue.toLocaleString('vi-VN')} VND</td>
                                             <td>
-                                                {(period === 'daily') && (
-                                                    <DetailBill date={order.order_date} period={period} />
-                                                )}
-                                                {(period === 'monthly' || period === 'yearly') && (
-                                                    <DetailBill period={period} />
-                                                )}
+                                                <DetailBill date={formatDateForDetail(order.order_date, period)} period={period} />
                                             </td>
                                         </tr>
                                     ))
@@ -128,7 +132,7 @@ const Revenue = () => {
                             </tbody>
                         </table>
                         <div className="d-flex tableFooter">
-                            <p>showing <b>{(page * pageSize) + 1}</b> to <b>{(page + 1) * pageSize}</b> of <b>{totalElements}</b> results</p>
+                            <p>showing <b>{(page * pageSize) + 1}</b> to <b>{Math.min((page + 1) * pageSize, totalElements)}</b> of <b>{totalElements}</b> results</p>
                             <Pagination count={totalPages} page={page + 1} color="error" className="pagination" showFirstButton showLastButton onChange={handlePageChange} />
                         </div>
                     </div>

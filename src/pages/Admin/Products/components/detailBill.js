@@ -10,17 +10,33 @@ const DetailBill = ({ date, period }) => {
     const [orderDetails, setOrderDetails] = useState([]);
     const [loading, setLoading] = useState(false);
 
+    const formatDate = (date, period) => {
+        const year = new Date(date).getFullYear();
+        const month = new Date(date).getMonth() + 1; // Months are zero-based
+        if (period === 'yearly') {
+            return `${year}-01-01`;
+        } else if (period === 'monthly') {
+            return `${year}-${month.toString().padStart(2, '0')}-01`;
+        }
+        return date; // Return the date as is for other periods
+    };
+
     const handleOpen = async () => {
         setOpen(true);
         setLoading(true);
         try {
             const token = Cookies.get('access_token');
+            const formattedDate = formatDate(date, period);
             const response = await axios.get(
                 'https://kgrill-backend-xfzz.onrender.com/api/v1/admin/revenue-details',
                 {
                     params: {
-                        date: date,
+                        date: formattedDate,
                         period: period,
+                        pageNo: 0,
+                        pageSize: 10,
+                        sortBy: 'orderDate',
+                        sortDir: 'asc'
                     },
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -73,40 +89,42 @@ const DetailBill = ({ date, period }) => {
                     <Typography variant="h6" component="h2" gutterBottom sx={{ textAlign: 'center', fontWeight: 'bold' }}>
                         CHI TIẾT ĐƠN HÀNG
                     </Typography>
-                    <table className="table table-bordered v-align">
-                        <thead className="thead-dark">
-                            <tr>
-                                <th style={{ width: '100px', textAlign: 'center', verticalAlign: 'middle' }}>ID</th>
-                                <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>TÊN KHÁCH HÀNG</th>
-                                <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>TÊN COMBO</th>
-                                <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>TRẠNG THÁI</th>
-                                <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>GIỜ NHẬP ĐƠN</th>
-                                <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>GIỜ GIAO TỚI</th>
-                                <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>TÊN SHIPPER</th>
-                                <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>GIÁ</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {loading ? (
+                    <Box sx={{ maxHeight: '400px', overflowY: 'auto' }}>
+                        <table className="table table-bordered v-align">
+                            <thead className="thead-dark">
                                 <tr>
-                                    <td colSpan="8" style={{ textAlign: 'center', verticalAlign: 'middle' }}>Loading...</td>
+                                    <th style={{ width: '100px', textAlign: 'center', verticalAlign: 'middle' }}>ID</th>
+                                    <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>TÊN KHÁCH HÀNG</th>
+                                    <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>TÊN COMBO</th>
+                                    <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>TRẠNG THÁI</th>
+                                    <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>GIỜ NHẬP ĐƠN</th>
+                                    <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>GIỜ GIAO TỚI</th>
+                                    <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>TÊN SHIPPER</th>
+                                    <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>GIÁ</th>
                                 </tr>
-                            ) : (
-                                orderDetails.map((order, index) => (
-                                    <tr key={index}>
-                                        <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Delivery_order_id}</td>
-                                        <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.User_name}</td>
-                                        <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Package_name.join(', ')}</td>
-                                        <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Delivery_order_status}</td>
-                                        <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{new Date(order.Delivery_order_date).toLocaleTimeString()}</td>
-                                        <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{new Date(order.Delivery_shipped_date).toLocaleTimeString()}</td>
-                                        <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Shipper_name}</td>
-                                        <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Delivery_order_value.toLocaleString('vi-VN')} VND</td>
+                            </thead>
+                            <tbody>
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan="8" style={{ textAlign: 'center', verticalAlign: 'middle' }}>Loading...</td>
                                     </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
+                                ) : (
+                                    orderDetails.map((order, index) => (
+                                        <tr key={index}>
+                                            <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Delivery_order_id}</td>
+                                            <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.User_name}</td>
+                                            <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Package_name.join(', ')}</td>
+                                            <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Delivery_order_status}</td>
+                                            <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{new Date(order.Delivery_order_date).toLocaleTimeString()}</td>
+                                            <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{new Date(order.Delivery_shipped_date).toLocaleTimeString()}</td>
+                                            <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Shipper_name}</td>
+                                            <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Delivery_order_value.toLocaleString('vi-VN')} VND</td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </Box>
 
                     <Box mt={2} display="flex" justifyContent="flex-end">
                         <Button variant="contained" color="secondary" onClick={handleClose}>
