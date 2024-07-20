@@ -105,19 +105,6 @@ const IngredientSelectionModal = ({ open, handleClose, handleSave, initialSelect
                 <Typography variant="h6" component="h2" gutterBottom sx={{ textAlign: 'center', fontWeight: 'bold', mb: 2 }}>
                     Chọn nguyên liệu
                 </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <div className="searchBox position-relative d-flex align-items-center">
-                        <IoMdSearch className="mr-2" />
-                        <input
-                            placeholder="Tìm kiếm..."
-                            onKeyPress={handleSearchKeyPress}
-                            onChange={(e) => setSearchValue(e.target.value)}
-                            value={searchValue}
-                            type="text"
-                            className="form-control"
-                        />
-                    </div>
-                </Box>
                 <div className="card shadow border-0 p-3 mt-4">
                     {loading ? (
                         <Typography>Loading...</Typography>
