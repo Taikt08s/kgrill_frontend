@@ -68,6 +68,8 @@ const ShipperAdmin = () => {
                                     <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>TỔNG SỐ ĐƠN</th>
                                     <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>ĐƠN ĐÃ HOÀN THÀNH</th>
                                     <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>ĐƠN ĐÃ HỦY</th>
+
+                                    <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>ĐƠN ĐANG XỬ LÝ</th>
                                     <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>HÀNH ĐỘNG</th>
                                 </tr>
                             </thead>
@@ -81,6 +83,7 @@ const ShipperAdmin = () => {
                                         <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{shipper.total_order}</td>
                                         <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{shipper.completed_order}</td>
                                         <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{shipper.cancelled_order}</td>
+                                        <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{shipper.total_order - shipper.completed_order - shipper.cancelled_order}</td>
                                         <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
                                             <div className="actions d-flex align-items-center" style={{ display: 'flex', justifyContent: 'center' }}>
                                                 <ListBillShipper shipperId={shipper.id} />
