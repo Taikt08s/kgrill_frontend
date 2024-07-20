@@ -93,11 +93,31 @@ const DetailProduct = ({ packageId }) => {
                                             <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{productDetails.package_name}</td>
                                             <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{productDetails.package_description}</td>
                                             <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{productDetails.package_price.toLocaleString('vi-VN')} VND</td>
-
                                             <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{productDetails.package_type}</td>
                                             <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{productDetails.package_size}</td>
                                             <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{productDetails.package_active_status ? 'Còn Hàng' : 'Hết Hàng'}</td>
                                         </tr>
+                                    </tbody>
+                                </table>
+                                <Typography variant="h6" component="h2" gutterBottom sx={{ textAlign: 'center', fontWeight: 'bold' }}>
+                                    DANH SÁCH MÓN
+                                </Typography>
+                                <table className="table table-bordered v-align">
+                                    <thead className="thead-dark">
+                                        <tr>
+                                            <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>ID MÓN</th>
+                                            <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>TÊN MÓN</th>
+                                            <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>SỐ LƯỢNG</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {productDetails.package_dish_list.map((dish, index) => (
+                                            <tr key={index}>
+                                                <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{dish.dish_id}</td>
+                                                <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{dish.dish_name}</td>
+                                                <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{dish.dish_quantity}</td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </table>
                                 <Box mt={2} display="flex" justifyContent="flex-end">

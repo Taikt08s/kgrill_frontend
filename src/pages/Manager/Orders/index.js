@@ -3,6 +3,7 @@ import { Box, Button, Modal, TextField, Typography, Snackbar, Select, MenuItem, 
 import Pagination from '@mui/material/Pagination';
 import ShipperSelect from './components/shipperSelect';
 import CancelOrder from './components/cancelOrder';
+import AcceptOrder from './components/acceptOrder';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
@@ -74,6 +75,7 @@ const Orders = () => {
                                     <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>GIÁ</th>
                                     <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>THỜI GIAN</th>
                                     <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>SỐ ĐIỆN THOẠI</th>
+                                    <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>SHIPPER GIAO ĐƠN</th>
                                     <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>TRẠNG THÁI</th>
                                     <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>HÀNH ĐỘNG</th>
                                 </tr>
@@ -90,16 +92,28 @@ const Orders = () => {
                                         <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Order_value.toLocaleString('vi-VN')} VND</td>
                                         <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{new Date(order.Order_date).toLocaleString()}</td>
                                         <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Phone}</td>
-                                        <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Order_status}</td>
+                                        <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Shipper_name}</td>
+                                        <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
+                                            {order.Order_status === "Processing" ? "Đang Xử Lý" :
+                                                order.Order_status === "Preparing" ? "Đang Chuẩn Bị" :
+                                                    order.Order_status === "Completed" ? "Hoàn Thành" :
+                                                        order.Order_status}
+                                        </td>
                                         <td>
                                             <div className="actions d-flex align-items-center" style={{ display: 'flex', justifyContent: 'center' }}>
-                                                <ShipperSelect orderId={order.Delivery_Order_Id} refreshOrders={refreshOrders} />
+                                                {order.Shipper_name === "Not assigned" && (
+                                                    <>
+                                                        {order.Order_status === "Processing" && <AcceptOrder orderId={order.Delivery_Order_Id} refreshOrders={refreshOrders} />}
+                                                        {order.Order_status === "Preparing" && <ShipperSelect orderId={order.Delivery_Order_Id} refreshOrders={refreshOrders} />}
+                                                    </>
+                                                )}
                                                 <CancelOrder orderId={order.Delivery_Order_Id} refreshOrders={refreshOrders} />
                                             </div>
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
+
                         </table>
                         <div className="d-flex tableFooter">
                             <p>showing <b>{orders.length}</b> of <b>{orders.length * totalPages}</b> results</p>
