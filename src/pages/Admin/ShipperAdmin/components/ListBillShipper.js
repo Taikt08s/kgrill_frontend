@@ -1,26 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { Box, Button, Modal, Typography } from '@mui/material';
+import { Box, Button, Modal, Typography, Pagination, Snackbar } from '@mui/material';
 import '../../../../App.css';
 import logo from '../../../../assets/images/logo.png';
 import { RiBillLine } from "react-icons/ri";
+import Alert from '@mui/material/Alert';
 
 const DetailProduct = ({ shipperId }) => {
     const [orders, setOrders] = useState([]);
     const [open, setOpen] = useState(false);
+    const [page, setPage] = useState(0); // Start with 0 to match API's page number
+    const [pageSize, setPageSize] = useState(10); // Default page size
+    const [totalElements, setTotalElements] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    const fetchOrderDetails = async () => {
+    const fetchOrderDetails = async (pageNumber) => {
         try {
             const token = Cookies.get('access_token');
             const response = await axios.get(
                 `https://kgrill-backend-xfzz.onrender.com/api/v1/admin/shipper-tracking/detail`,
                 {
                     params: {
-                        pageNo: 0,
-                        pageSize: 10,
+                        pageNo: pageNumber,
+                        pageSize: pageSize,
                         sortBy: 'id',
                         sortDir: 'asc',
                         shipperId: shipperId,
@@ -34,16 +43,32 @@ const DetailProduct = ({ shipperId }) => {
 
             const data = response.data.data;
             setOrders(data.content);
+            setTotalPages(data.total_pages);
+            setTotalElements(data.total_elements);
         } catch (error) {
             console.error('Error fetching order details:', error);
+            setSnackbarMessage('Error fetching order details');
+            setSnackbarSeverity('error');
+            setSnackbarOpen(true);
         }
     };
 
     useEffect(() => {
         if (open) {
-            fetchOrderDetails();
+            fetchOrderDetails(page);
         }
-    }, [open, shipperId]);
+    }, [open, shipperId, page]);
+
+    const handlePageChange = (event, value) => {
+        setPage(value - 1); // MUI Pagination is 1-based, API is 0-based
+    };
+
+    const handleSnackbarClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackbarOpen(false);
+    };
 
     return (
         <>
@@ -95,13 +120,25 @@ const DetailProduct = ({ shipperId }) => {
                                         <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Package_name.join(', ')}</td>
                                         <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Delivery_order_status}</td>
                                         <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{new Date(order.Delivery_order_date).toLocaleString()}</td>
-                                        <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{new Date(order.Delivery_shipped_date).toLocaleString()}</td>
+                                        <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Delivery_shipped_date ? new Date(order.Delivery_shipped_date).toLocaleString() : 'N/A'}</td>
                                         <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Shipper_name}</td>
                                         <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Delivery_order_value.toLocaleString('vi-VN')} VND</td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
+                        <div className="d-flex tableFooter">
+                            <p>showing <b>{orders.length}</b> of <b>{totalElements}</b> results</p>
+                            <Pagination
+                                count={totalPages}
+                                page={page + 1} // MUI Pagination is 1-based
+                                onChange={handlePageChange}
+                                color="error"
+                                className="pagination"
+                                showFirstButton
+                                showLastButton
+                            />
+                        </div>
                     </div>
                     <Box mt={2} display="flex" justifyContent="flex-end">
                         <Button variant="contained" color="secondary" onClick={handleClose}>
@@ -110,6 +147,14 @@ const DetailProduct = ({ shipperId }) => {
                     </Box>
                 </Box>
             </Modal>
+            <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose} anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+            }}>
+                <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </>
     );
 };

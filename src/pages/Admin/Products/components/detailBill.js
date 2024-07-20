@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Box, Button, Modal, Typography } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, Button, Modal, Typography, Pagination } from '@mui/material';
 import { RiBillLine } from "react-icons/ri";
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -9,6 +9,10 @@ const DetailBill = ({ date, period }) => {
     const [open, setOpen] = useState(false);
     const [orderDetails, setOrderDetails] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(0);
+    const [pageSize, setPageSize] = useState(10);
+    const [totalElements, setTotalElements] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
 
     const formatDate = (date, period) => {
         const year = new Date(date).getFullYear();
@@ -21,8 +25,7 @@ const DetailBill = ({ date, period }) => {
         return date; // Return the date as is for other periods
     };
 
-    const handleOpen = async () => {
-        setOpen(true);
+    const fetchOrderDetails = async (pageNumber) => {
         setLoading(true);
         try {
             const token = Cookies.get('access_token');
@@ -33,8 +36,8 @@ const DetailBill = ({ date, period }) => {
                     params: {
                         date: formattedDate,
                         period: period,
-                        pageNo: 0,
-                        pageSize: 10,
+                        pageNo: pageNumber,
+                        pageSize: pageSize,
                         sortBy: 'orderDate',
                         sortDir: 'asc'
                     },
@@ -44,12 +47,11 @@ const DetailBill = ({ date, period }) => {
                     },
                 }
             );
-            // Assuming response.data.data.content is an array of objects
-            if (Array.isArray(response.data.data.content)) {
-                setOrderDetails(response.data.data.content);
-            } else {
-                console.error('API response content is not an array:', response.data);
-            }
+
+            const data = response.data.data;
+            setOrderDetails(data.content);
+            setTotalPages(data.total_pages);
+            setTotalElements(data.total_elements);
             setLoading(false);
         } catch (error) {
             console.error('Error fetching order details:', error);
@@ -57,7 +59,22 @@ const DetailBill = ({ date, period }) => {
         }
     };
 
+    useEffect(() => {
+        if (open) {
+            fetchOrderDetails(page);
+        }
+    }, [open, page]);
+
+    const handleOpen = () => {
+        setOpen(true);
+        fetchOrderDetails(page);
+    };
+
     const handleClose = () => setOpen(false);
+
+    const handlePageChange = (event, value) => {
+        setPage(value - 1); // MUI Pagination is 1-based, API is 0-based
+    };
 
     return (
         <>
@@ -116,7 +133,7 @@ const DetailBill = ({ date, period }) => {
                                             <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Package_name.join(', ')}</td>
                                             <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Delivery_order_status}</td>
                                             <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{new Date(order.Delivery_order_date).toLocaleTimeString()}</td>
-                                            <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{new Date(order.Delivery_shipped_date).toLocaleTimeString()}</td>
+                                            <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Delivery_shipped_date ? new Date(order.Delivery_shipped_date).toLocaleTimeString() : 'N/A'}</td>
                                             <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Shipper_name}</td>
                                             <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Delivery_order_value.toLocaleString('vi-VN')} VND</td>
                                         </tr>
@@ -124,6 +141,18 @@ const DetailBill = ({ date, period }) => {
                                 )}
                             </tbody>
                         </table>
+                        <div className="d-flex tableFooter">
+                            <p>showing <b>{orderDetails.length}</b> of <b>{totalElements}</b> results</p>
+                            <Pagination
+                                count={totalPages}
+                                page={page + 1} // MUI Pagination is 1-based
+                                onChange={handlePageChange}
+                                color="error"
+                                className="pagination"
+                                showFirstButton
+                                showLastButton
+                            />
+                        </div>
                     </Box>
 
                     <Box mt={2} display="flex" justifyContent="flex-end">
