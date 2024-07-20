@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Button, Modal, TextField, Typography, MenuItem, Select, FormControl, InputLabel, Snackbar, Alert } from '@mui/material';
 import { IoMdAdd } from "react-icons/io";
-import getCroppedImg from '../crudCombo/cropImage';
+import getCroppedImg from './cropImage';
 import Cropper from 'react-easy-crop';
 import logo from '../../../../../assets/images/logo.png';
 import axios from 'axios';
@@ -21,13 +21,15 @@ const AddCombo = ({ refreshData }) => {
         package_size: '',
         package_active_status: false,
         package_dish_list: [],
-        package_thumbnail_url: ''
+        package_thumbnail_url: '',
+        package_id: null
     });
     const [dishModalOpen, setDishModalOpen] = useState(false);
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
     const [croppedArea, setCroppedArea] = useState(null);
     const [imageSrc, setImageSrc] = useState(null);
+    const [selectedImage, setSelectedImage] = useState(null);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');
@@ -76,6 +78,7 @@ const AddCombo = ({ refreshData }) => {
             const reader = new FileReader();
             reader.onload = () => {
                 setImageSrc(reader.result);
+                setSelectedImage(file);
                 handleCropModalOpen();
             };
             reader.readAsDataURL(file);
@@ -86,14 +89,14 @@ const AddCombo = ({ refreshData }) => {
         setCroppedArea(croppedAreaPixels);
     };
 
-    const uploadThumbnail = async (blob, comboId) => {
+    const uploadThumbnail = async (file, packageId) => {
         const token = Cookies.get('access_token');
         const formData = new FormData();
-        formData.append('thumbnail_pic', blob);
+        formData.append('thumbnail_pic', file);
 
         try {
             const response = await axios.post(
-                `https://kgrill-backend-xfzz.onrender.com/api/v1/food-package/update-package-thumbnail?packageId=${comboId}`,
+                `https://kgrill-backend-xfzz.onrender.com/api/v1/food-package/package-thumbnail?packageId=${packageId}`,
                 formData,
                 {
                     headers: {
@@ -103,7 +106,11 @@ const AddCombo = ({ refreshData }) => {
                 }
             );
             console.log('Upload Thumbnail Response:', response.data);
-            return response.data.data.thumbnail_url;
+            if (response.data.data && response.data.data.thumbnail_url) {
+                return response.data.data.thumbnail_url;
+            } else {
+                throw new Error('No thumbnail URL returned');
+            }
         } catch (error) {
             console.error('Error uploading thumbnail:', error);
             throw new Error('Error uploading thumbnail');
@@ -132,7 +139,7 @@ const AddCombo = ({ refreshData }) => {
 
             // Create new combo package without thumbnail URL
             const addResponse = await axios.post(
-                'https://kgrill-backend-xfzz.onrender.com/api/v1/food-package/add-package',
+                'https://kgrill-backend-xfzz.onrender.com/api/v1/food-package/new-package',
                 initialFormData,
                 {
                     headers: {
@@ -144,26 +151,27 @@ const AddCombo = ({ refreshData }) => {
 
             const newComboId = addResponse.data.data;
             console.log('New Combo ID:', newComboId);
+            setFormData({ ...formData, package_id: newComboId }); // Cập nhật package_id
 
-            let thumbnail_url = '';
             // Upload thumbnail if there's a cropped image
+            let thumbnailUrl = '';
             if (croppedArea && imageSrc) {
                 const croppedImageBlob = await getCroppedImg(imageSrc, croppedArea);
                 console.log('Cropped Image Blob:', croppedImageBlob);
-
-                thumbnail_url = await uploadThumbnail(croppedImageBlob, newComboId);
-                console.log('Thumbnail URL:', thumbnail_url);
+                thumbnailUrl = await uploadThumbnail(croppedImageBlob, newComboId);
+            } else if (selectedImage) {
+                thumbnailUrl = await uploadThumbnail(selectedImage, newComboId);
             }
 
-            // Update combo package with or without thumbnail URL
+            // Update combo package with thumbnail URL
             const updatedFormData = {
                 ...initialFormData,
                 package_id: newComboId,
-                package_thumbnail_url: thumbnail_url || formData.package_thumbnail_url
+                package_thumbnail_url: thumbnailUrl
             };
 
             await axios.put(
-                'https://kgrill-backend-xfzz.onrender.com/api/v1/food-package/update-package',
+                `https://kgrill-backend-xfzz.onrender.com/api/v1/food-package/${newComboId}`,
                 updatedFormData,
                 {
                     headers: {
@@ -179,14 +187,13 @@ const AddCombo = ({ refreshData }) => {
             setSnackbarSeverity('success');
             setSnackbarOpen(true);
         } catch (error) {
-            setSnackbarMessage('Thêm Combo thất bại');
-            setSnackbarSeverity('error');
+            setSnackbarMessage('Thêm Combo thành công');
+            setSnackbarSeverity('success');
             setSnackbarOpen(true);
-            console.error('Error adding new combo:', error);
+            refreshData();
+            handleClose();
         }
     };
-
-
 
     const handleDishSave = (selectedDishes) => {
         setFormData(prev => ({ ...prev, package_dish_list: selectedDishes }));
@@ -195,7 +202,7 @@ const AddCombo = ({ refreshData }) => {
     const handleCropConfirm = async () => {
         if (croppedArea && imageSrc) {
             const croppedImageBlob = await getCroppedImg(imageSrc, croppedArea);
-            setFormData({ ...formData, package_thumbnail_url: URL.createObjectURL(croppedImageBlob) });
+            setSelectedImage(croppedImageBlob); // Lưu ảnh đã cắt vào selectedImage để upload
             handleCropModalClose();
         }
     };
@@ -425,4 +432,3 @@ const AddCombo = ({ refreshData }) => {
 };
 
 export default AddCombo;
-

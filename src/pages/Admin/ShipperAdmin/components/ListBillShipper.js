@@ -73,34 +73,36 @@ const DetailProduct = ({ shipperId }) => {
                     <Typography variant="h6" component="h2" gutterBottom sx={{ textAlign: 'center', fontWeight: 'bold' }}>
                         CHI TIẾT ĐƠN HÀNG
                     </Typography>
-                    <table className="table table-bordered v-align">
-                        <thead className="thead-dark">
-                            <tr>
-                                <th style={{ width: '100px', textAlign: 'center', verticalAlign: 'middle' }}>ID</th>
-                                <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>TÊN KHÁCH HÀNG</th>
-                                <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>ĐƠN HÀNG</th>
-                                <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>TRẠNG THÁI</th>
-                                <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>GIỜ NHẬP ĐƠN</th>
-                                <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>GIỜ GIAO TỚI</th>
-                                <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>TÊN SHIPPER</th>
-                                <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>GIÁ</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {orders.map((order, index) => (
-                                <tr key={index}>
-                                    <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Delivery_order_id}</td>
-                                    <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.User_name}</td>
-                                    <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Package_name.join(', ')}</td>
-                                    <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Delivery_order_status}</td>
-                                    <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{new Date(order.Delivery_order_date).toLocaleString()}</td>
-                                    <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{new Date(order.Delivery_shipped_date).toLocaleString()}</td>
-                                    <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Shipper_name}</td>
-                                    <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Delivery_order_value.toLocaleString('vi-VN')} VND</td>
+                    <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                        <table className="table table-bordered v-align">
+                            <thead className="thead-dark">
+                                <tr>
+                                    <th style={{ width: '100px', textAlign: 'center', verticalAlign: 'middle' }}>ID</th>
+                                    <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>TÊN KHÁCH HÀNG</th>
+                                    <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>ĐƠN HÀNG</th>
+                                    <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>TRẠNG THÁI</th>
+                                    <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>GIỜ NHẬP ĐƠN</th>
+                                    <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>GIỜ GIAO TỚI</th>
+                                    <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>TÊN SHIPPER</th>
+                                    <th style={{ textAlign: 'center', verticalAlign: 'middle' }}>GIÁ</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {orders.map((order, index) => (
+                                    <tr key={index}>
+                                        <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Delivery_order_id}</td>
+                                        <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.User_name}</td>
+                                        <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Package_name.join(', ')}</td>
+                                        <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Delivery_order_status}</td>
+                                        <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{new Date(order.Delivery_order_date).toLocaleString()}</td>
+                                        <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{new Date(order.Delivery_shipped_date).toLocaleString()}</td>
+                                        <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Shipper_name}</td>
+                                        <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{order.Delivery_order_value.toLocaleString('vi-VN')} VND</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                     <Box mt={2} display="flex" justifyContent="flex-end">
                         <Button variant="contained" color="secondary" onClick={handleClose}>
                             Đóng

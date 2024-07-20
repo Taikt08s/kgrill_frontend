@@ -20,7 +20,7 @@ const ConfirmShip = ({ open, handleClose, orderId, shipperId, shipperName, refre
         const token = Cookies.get('access_token');
         try {
             await axios.get(
-                `https://kgrill-backend-xfzz.onrender.com/api/v1/shipper/assign-shipper?shipperId=${shipperId}&orderId=${orderId}`,
+                `https://kgrill-backend-xfzz.onrender.com/api/v1/shipper/order?shipperId=${shipperId}&orderId=${orderId}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,

@@ -129,15 +129,6 @@ const Sidebar = () => {
                     </Button>
                 </Link>
             </li>
-            <li>
-                <Link to="/ShipperManager">
-                    <Button className={`w-100 ${activeTab === 6 ? 'active' : ''}`} onClick={() => isOpenSubmenu(6)}>
-                        <span className='icon'><MdOutlineDeliveryDining /></span>
-                        Shipper
-                        <span className='arrow'><FaAngleRight /></span>
-                    </Button>
-                </Link>
-            </li>
         </>
     );
 

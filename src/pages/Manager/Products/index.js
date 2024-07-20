@@ -21,7 +21,7 @@ const ProductsManager = () => {
         const token = Cookies.get('access_token');
         try {
             const response = await axios.post(
-                `https://kgrill-backend-xfzz.onrender.com/api/v1/food-package/search-package?pageNumber=${pageNumber}&pageSize=10&sortField=id&sortDir=asc`,
+                `https://kgrill-backend-xfzz.onrender.com/api/v1/food-package/package-list?pageNumber=${pageNumber}&pageSize=10&sortField=id&sortDir=asc`,
                 {},
                 {
                     headers: {
