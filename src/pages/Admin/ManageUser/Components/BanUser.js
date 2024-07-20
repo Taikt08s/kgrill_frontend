@@ -43,7 +43,7 @@ const BanUser = ({ user, refreshUser }) => {
             );
             handleClose();
             refreshUser({ ...user, account_not_locked: !user.account_not_locked }); // Update local user state
-            toast.success(user.account_not_locked ? 'Chặn' : 'Mở khóa' + ' thành công!');
+
 
             setSnackbarMessage(user.account_not_locked ? 'Chặn' + ' thành công!' : 'Mở khóa' + ' thành công!');
             setSnackbarSeverity('success');

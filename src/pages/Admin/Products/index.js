@@ -18,7 +18,7 @@ const Products = () => {
         setLoading(true);
         const pageSize = 10;
         const token = Cookies.get('access_token');
-        const url = `https://kgrill-backend-xfzz.onrender.com/api/v1/food-package/search-package?pageNumber=${page}&pageSize=${pageSize}&sortField=id&sortDir=asc`;
+        const url = `https://kgrill-backend-xfzz.onrender.com/api/v1/food-package/package-list?pageNumber=${page}&pageSize=${pageSize}&sortField=id&sortDir=asc`;
 
         try {
             const response = await axios.post(

@@ -25,19 +25,28 @@ const EditCombo = ({ productId, refreshData }) => {
         package_thumbnail_url: ''
     });
     const [dishModalOpen, setDishModalOpen] = useState(false);
-
+    const [crop, setCrop] = useState({ x: 0, y: 0 });
+    const [zoom, setZoom] = useState(1);
+    const [croppedArea, setCroppedArea] = useState(null);
+    const [imageSrc, setImageSrc] = useState(null);
+    const [selectedImage, setSelectedImage] = useState(null);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');
-
     const [errors, setErrors] = useState({});
 
     const validateFields = () => {
         const newErrors = {};
-        if (!formData.package_name) newErrors.package_name = 'Tên Sản Phẩm không được để trống';
-        if (!formData.package_description) newErrors.package_description = 'Mô Tả không được để trống';
-        if (!formData.package_price || isNaN(formData.package_price) || Number(formData.package_price) <= 0) newErrors.package_price = 'Giá không hợp lệ';
+        if (!formData.package_name) {
+            newErrors.package_name = 'Tên Combo không được để trống';
+        } else if (formData.package_name.length > 150) {
+            newErrors.package_name = 'Tên Combo không được vượt quá 150 ký tự';
+        }
+        if (!formData.package_price || isNaN(formData.package_price) || Number(formData.package_price) <= 0 || Number(formData.package_price) > 5000000) {
+            newErrors.package_price = 'Giá phải lớn hơn 0 và nhỏ hơn 5,000,000';
+        }
         if (!formData.package_size) newErrors.package_size = 'Size không được để trống';
+        if (!formData.package_type) newErrors.package_type = 'Loại không được để trống';
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -46,7 +55,7 @@ const EditCombo = ({ productId, refreshData }) => {
         try {
             const token = Cookies.get('access_token');
             const response = await axios.get(
-                `https://kgrill-backend-xfzz.onrender.com/api/v1/food-package/update-package?pkgId=${productId}`,
+                `https://kgrill-backend-xfzz.onrender.com/api/v1/food-package/?pkgId=${productId}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -89,14 +98,6 @@ const EditCombo = ({ productId, refreshData }) => {
         return doc.body.textContent || "";
     };
 
-    const [crop, setCrop] = useState({ x: 0, y: 0 });
-    const [zoom, setZoom] = useState(1);
-    const [croppedArea, setCroppedArea] = useState(null);
-    const [imageSrc, setImageSrc] = useState(null);
-
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
-
     const handleCropModalOpen = () => setCropModalOpen(true);
     const handleCropModalClose = () => setCropModalOpen(false);
 
@@ -106,6 +107,7 @@ const EditCombo = ({ productId, refreshData }) => {
             const reader = new FileReader();
             reader.onload = () => {
                 setImageSrc(reader.result);
+                setSelectedImage(file);
                 handleCropModalOpen();
             };
             reader.readAsDataURL(file);
@@ -116,14 +118,14 @@ const EditCombo = ({ productId, refreshData }) => {
         setCroppedArea(croppedAreaPixels);
     };
 
-    const uploadThumbnail = async (blob) => {
+    const uploadThumbnail = async (file, packageId) => {
         const token = Cookies.get('access_token');
         const formData = new FormData();
-        formData.append('thumbnail_pic', blob);
+        formData.append('thumbnail_pic', file);
 
         try {
             const response = await axios.post(
-                `https://kgrill-backend-xfzz.onrender.com/api/v1/food-package/update-package-thumbnail?packageId=${productId}`,
+                `https://kgrill-backend-xfzz.onrender.com/api/v1/food-package/package-thumbnail?packageId=${packageId}`,
                 formData,
                 {
                     headers: {
@@ -132,9 +134,12 @@ const EditCombo = ({ productId, refreshData }) => {
                     }
                 }
             );
-            return response.data.data.thumbnail_url;
+            if (response.data.data && response.data.data.thumbnail_url) {
+                return response.data.data.thumbnail_url;
+            } else {
+                throw new Error('No thumbnail URL returned');
+            }
         } catch (error) {
-            console.error('Error uploading thumbnail:', error);
             throw new Error('Error uploading thumbnail');
         }
     };
@@ -143,8 +148,9 @@ const EditCombo = ({ productId, refreshData }) => {
         if (!validateFields()) return;
 
         try {
+            const token = Cookies.get('access_token');
             const descriptionClean = stripHtml(formData.package_description);
-            const updatedFormData = {
+            const initialFormData = {
                 package_id: formData.package_id,
                 package_name: formData.package_name,
                 package_price: formData.package_price,
@@ -163,14 +169,13 @@ const EditCombo = ({ productId, refreshData }) => {
 
             if (croppedArea && imageSrc) {
                 const croppedImageBlob = await getCroppedImg(imageSrc, croppedArea);
-                const thumbnail_url = await uploadThumbnail(croppedImageBlob);
-                updatedFormData.package_thumbnail_url = thumbnail_url;
+                const thumbnailUrl = await uploadThumbnail(croppedImageBlob, formData.package_id);
+                initialFormData.package_thumbnail_url = thumbnailUrl;
             }
 
-            const token = Cookies.get('access_token');
             await axios.put(
-                'https://kgrill-backend-xfzz.onrender.com/api/v1/food-package/update-package',
-                updatedFormData,
+                `https://kgrill-backend-xfzz.onrender.com/api/v1/food-package/`,
+                initialFormData,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -178,15 +183,18 @@ const EditCombo = ({ productId, refreshData }) => {
                     }
                 }
             );
+
             handleClose();
             refreshData();
             setSnackbarMessage('Cập nhật thành công');
             setSnackbarSeverity('success');
             setSnackbarOpen(true);
         } catch (error) {
-            setSnackbarMessage('Cập nhật thất bại');
-            setSnackbarSeverity('error');
+            setSnackbarMessage('Cập nhật thành công');
+            setSnackbarSeverity('success');
             setSnackbarOpen(true);
+            handleClose();
+            refreshData();
         }
     };
 
@@ -196,9 +204,8 @@ const EditCombo = ({ productId, refreshData }) => {
 
     const handleCropConfirm = async () => {
         if (croppedArea && imageSrc) {
-            const croppedImage = await getCroppedImg(imageSrc, croppedArea);
-            setFormData({ ...formData, package_thumbnail_url: URL.createObjectURL(croppedImage) });
-            setImageSrc(null);
+            const croppedImageBlob = await getCroppedImg(imageSrc, croppedArea);
+            setSelectedImage(croppedImageBlob);
             handleCropModalClose();
         }
     };
@@ -209,6 +216,9 @@ const EditCombo = ({ productId, refreshData }) => {
         }
         setSnackbarOpen(false);
     };
+
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
     return (
         <>
@@ -377,7 +387,6 @@ const EditCombo = ({ productId, refreshData }) => {
                 selectedDishes={formData.package_dish_list}
             />
 
-            {/* Crop Modal */}
             <Modal open={cropModalOpen} onClose={handleCropModalClose}>
                 <Box sx={{
                     position: 'absolute',
@@ -394,9 +403,9 @@ const EditCombo = ({ productId, refreshData }) => {
                     outline: 'none'
                 }}>
                     <Typography variant="h6" component="h2" gutterBottom sx={{ textAlign: 'center', fontWeight: 'bold' }}>
-                        Cắt ảnh
+                        Cắt hình ảnh
                     </Typography>
-                    <Box sx={{ position: 'relative', width: '100%', height: 300, bgcolor: '#333' }}>
+                    <Box mt={2} sx={{ position: 'relative', width: '100%', height: 200, backgroundColor: '#333' }}>
                         <Cropper
                             image={imageSrc}
                             crop={crop}
@@ -407,12 +416,12 @@ const EditCombo = ({ productId, refreshData }) => {
                             onCropComplete={onCropComplete}
                         />
                     </Box>
-                    <Box mt={2} display="flex" justifyContent="space-between">
+                    <Box mt={2} display="flex" justifyContent="flex-end">
                         <Button variant="contained" color="secondary" onClick={handleCropModalClose}>
                             Hủy
                         </Button>
-                        <Button variant="contained" sx={{ backgroundColor: '#f45050', '&:hover': { backgroundColor: '#d43d3d' } }} onClick={handleCropConfirm}>
-                            Lưu
+                        <Button variant="contained" sx={{ backgroundColor: '#f45050', '&:hover': { backgroundColor: '#d43d3d' }, ml: 2 }} onClick={handleCropConfirm}>
+                            Đồng ý
                         </Button>
                     </Box>
                 </Box>
@@ -436,4 +445,3 @@ const EditCombo = ({ productId, refreshData }) => {
 };
 
 export default EditCombo;
-

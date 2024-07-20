@@ -21,7 +21,7 @@ const DetailProduct = ({ packageId }) => {
     const fetchProductDetails = async () => {
         setLoading(true);
         const token = Cookies.get('access_token');
-        const url = `https://kgrill-backend-xfzz.onrender.com/api/v1/food-package/update-package?pkgId=${packageId}`;
+        const url = `https://kgrill-backend-xfzz.onrender.com/api/v1/food-package/?pkgId=${packageId}`;
 
         try {
             const response = await axios.get(url, {

@@ -19,7 +19,7 @@ const DeleteCombo = ({ productId, refreshData }) => {
     const handleDelete = async () => {
         const token = Cookies.get('access_token');
         try {
-            await axios.delete(`https://kgrill-backend-xfzz.onrender.com/api/v1/food-package/delete/${productId}`, {
+            await axios.delete(`https://kgrill-backend-xfzz.onrender.com/api/v1/food-package/${productId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json'
