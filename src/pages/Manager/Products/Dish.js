@@ -31,8 +31,8 @@ const DishManager = () => {
         const token = Cookies.get('access_token');
         try {
             const response = await axios.post(
-                `https://kgrill-backend-xfzz.onrender.com/api/v1/dish/search?pageNumber=${pageNumber}&pageSize=10&sortField=id&sortDir=asc`,
-                // Correct way to pass headers
+                `https://kgrill-backend-xfzz.onrender.com/api/v1/dish/dish-list?pageNumber=${pageNumber}&pageSize=10&sortField=id&sortDir=asc`,
+
                 {},
                 {
                     headers: {

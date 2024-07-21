@@ -30,12 +30,13 @@ const EditDish = ({ dishId, refreshData }) => {
     const fetchDishDetails = async (id) => {
         const token = Cookies.get('access_token');
         try {
-            const response = await axios.get(`https://kgrill-backend-xfzz.onrender.com/api/v1/dish/${id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
+            const response = await axios.get(`https://kgrill-backend-xfzz.onrender.com/api/v1/dish/dish-detail?id=${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
             const product = response.data;
             setFormData({
                 id: product.dish_id || '',
@@ -101,7 +102,7 @@ const EditDish = ({ dishId, refreshData }) => {
             };
 
             const response = await axios.put(
-                `https://kgrill-backend-xfzz.onrender.com/api/v1/dish/update`,
+                `https://kgrill-backend-xfzz.onrender.com/api/v1/dish/`,
                 updatedDish,
                 {
                     headers: {

@@ -20,6 +20,7 @@ const Orders = () => {
         try {
             const response = await axios.get(
                 `https://kgrill-backend-xfzz.onrender.com/api/v1/delivery-order/order-list?pageNo=${pageNo}&pageSize=10&sortBy=id&sortDir=asc`,
+                //`https://kgrill-backend-xfzz.onrender.com/api/v1/delivery-order/ordering?pageNo=${pageNo}&pageSize=10&sortBy=id&sortDir=asc`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
