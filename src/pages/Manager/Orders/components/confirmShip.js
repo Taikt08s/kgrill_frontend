@@ -21,6 +21,7 @@ const ConfirmShip = ({ open, handleClose, orderId, shipperId, shipperName, refre
         try {
             await axios.post(
                 `https://kgrill-backend-xfzz.onrender.com/api/v1/shipper/order?shipperId=${shipperId}&orderId=${orderId}`,
+                {},
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
