@@ -18,7 +18,7 @@ const CancelOrder = ({ orderId, refreshOrders }) => {
         const token = Cookies.get('access_token');
         try {
             await axios.get(
-                `https://kgrill-backend-xfzz.onrender.com/api/v1/delivery-order/cancel-order/${orderId}`,
+                `https://kgrill-backend-xfzz.onrender.com/api/v1/delivery-order/oder-cancellation/${orderId}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
