@@ -62,7 +62,8 @@ const AddDish = ({ onSave, refreshData }) => {
         try {
             const token = Cookies.get('access_token');
             const response = await axios.post(
-                'https://kgrill-backend-xfzz.onrender.com/api/v1/dish/create',
+                'https://kgrill-backend-xfzz.onrender.com/api/v1/dish/new-dish',
+
                 {
                     dish_name: formData.nameDish,
                     dish_price: parseFloat(formData.price),

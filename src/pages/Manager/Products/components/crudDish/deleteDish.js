@@ -19,7 +19,7 @@ const DeleteDish = ({ product, refreshData }) => {
         try {
             const token = Cookies.get('access_token');
             const response = await axios.delete(
-                `https://kgrill-backend-xfzz.onrender.com/api/v1/dish/${product.dish_id}/delete`,
+                `https://kgrill-backend-xfzz.onrender.com/api/v1/dish/${product.dish_id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,

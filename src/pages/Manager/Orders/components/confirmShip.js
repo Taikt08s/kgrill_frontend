@@ -19,7 +19,7 @@ const ConfirmShip = ({ open, handleClose, orderId, shipperId, shipperName, refre
     const handleSave = async () => {
         const token = Cookies.get('access_token');
         try {
-            await axios.get(
+            await axios.post(
                 `https://kgrill-backend-xfzz.onrender.com/api/v1/shipper/order?shipperId=${shipperId}&orderId=${orderId}`,
                 {
                     headers: {
@@ -31,7 +31,7 @@ const ConfirmShip = ({ open, handleClose, orderId, shipperId, shipperName, refre
             setSnackbarMessage('Giao đơn cho Shipper thành công!');
             setSnackbarSeverity('success');
             setSnackbarOpen(true);
-            refreshOrders(); // Refresh orders after assigning shipper
+            refreshOrders();
         } catch (error) {
             console.error('Error assigning shipper:', error);
             setSnackbarMessage('Giao đơn cho Shipper thất bại!');

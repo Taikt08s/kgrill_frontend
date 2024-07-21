@@ -46,7 +46,8 @@ const DishSelectionModal = ({ open, handleClose, handleSave, selectedDishes }) =
 
         try {
             const response = await axios.get(
-                `https://kgrill-backend-xfzz.onrender.com/api/v1/dish/search-by-filter?${queryParams}`,
+                `https://kgrill-backend-xfzz.onrender.com/api/v1/dish/dish-details-by-filter?${queryParams}`,
+
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,

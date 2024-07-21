@@ -21,7 +21,7 @@ const IngredientSelectionModal = ({ open, handleClose, handleSave, initialSelect
         const token = Cookies.get('access_token');
         try {
             const response = await axios.post(
-                `https://kgrill-backend-xfzz.onrender.com/api/v1/ingredient/search?pageNumber=${pageNumber}&pageSize=10&sortField=id&sortDir=asc&value=${searchTerm}`,
+                `https://kgrill-backend-xfzz.onrender.com/api/v1/ingredient/ingredient-list?pageNumber=${pageNumber}&pageSize=10&sortField=id&sortDir=asc&value=${searchTerm}`,
                 {},
                 {
                     headers: {
